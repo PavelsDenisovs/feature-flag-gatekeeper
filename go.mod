@@ -1,3 +1,3 @@
-module github.com/PavelsDenisovs/gatekeeper
+module github.com/PavelsDenisovs/feature-flag-gatekeeper
 
-go 1.24.0
+go 1.26.0
