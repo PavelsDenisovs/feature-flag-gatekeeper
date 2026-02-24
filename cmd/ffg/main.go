@@ -2,7 +2,8 @@ package main
 
 import (
 	"os"
-	"github.com/PavelsDenisovs/feature-flag-gatekeeper/cmd/ffg/cli"
+
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/cli"
 )
 
 func main() {
