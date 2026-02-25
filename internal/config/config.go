@@ -14,6 +14,21 @@ type Config struct {
 	DBUrl string
 }
 
+type Overrides struct {
+	Port  *int
+	DBUrl *string
+}
+
+// Apply overrides cfg with provided fields
+func (cfg *Config) Apply(overrides Overrides) {
+	if overrides.Port != nil {
+		cfg.Port = *overrides.Port
+	}
+	if overrides.DBUrl != nil {
+		cfg.DBUrl = *overrides.DBUrl
+	}
+}
+
 // Load loads configuration from environment after loading a configuration
 // from config file by path. 
 func Load(path string) (Config, error) {
