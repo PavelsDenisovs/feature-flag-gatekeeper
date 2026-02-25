@@ -204,8 +204,8 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 }
 
 func loadConfig(cr *CommandRunner) (config.Config, error) {
-	configFilePath := *cr.stringFlags["config"]
-	cfg, err := config.LoadConfig(configFilePath)
+	path := *cr.stringFlags["config"]
+	cfg, err := config.Load(path)
 	if err != nil {
 		return config.Config{}, errors.New(err.Error())
 	}

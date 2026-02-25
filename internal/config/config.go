@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -9,32 +10,34 @@ import (
 )
 
 type Config struct {
-	Port int
+	Port  int
 	DBUrl string
 }
 
-func LoadConfig(configFilePath string) (Config, error) {
-	if configFilePath != "" {
-		if err := godotenv.Load(configFilePath); err != nil {
-			return Config{}, fmt.Errorf("failed to load config file by path %s: %w", configFilePath, err)
+// Load loads configuration from environment after loading a configuration
+// from config file by path. 
+func Load(path string) (Config, error) {
+	if path != "" {
+		if err := godotenv.Load(path); err != nil {
+			return Config{}, fmt.Errorf("failed to load config file by path %s: %w", path, err)
 		}
 	} else {
-		godotenv.Load()
+		_ = godotenv.Load()
 	}
   
-	cfg, err := loadEnvConfig()
+	cfg, err := fromEnv()
 	if err != nil {
-		return Config{}, fmt.Errorf("failed to parse environment variables into config: %w", err)
+		return Config{}, fmt.Errorf("failed to read config from environment: %w", err)
 	}
 
-	if err := validateConfig(cfg); err != nil {
+	if err := validate(cfg); err != nil {
 		return Config{}, fmt.Errorf("config validation failed: %w", err)
 	}
 
 	return cfg, nil
 }
 
-func loadEnvConfig() (Config, error) {
+func fromEnv() (Config, error) {
 	port, err := getIntEnv("PORT", 8080)
 	if err != nil {
 		return Config{}, err
@@ -46,7 +49,7 @@ func loadEnvConfig() (Config, error) {
 	}, nil
 }
 
-func validateConfig(cfg Config) error {
+func validate(cfg Config) error {
 	var errs []error
 
 	if cfg.DBUrl == "" {
@@ -54,13 +57,13 @@ func validateConfig(cfg Config) error {
 	}
 
 	if len(errs) > 0 {
-		return fmt.Errorf("config validation failed: %v", errs)
+		return fmt.Errorf("config validation failed: %v", errors.Join(errs...))
 	}
 
 	return nil
 }
 
-// returns 0 if not set
+// returns defaultVal if not set
 func getIntEnv(key string, defaultVal int) (int, error) {
 	val := os.Getenv(key) 
 	if val == "" {
