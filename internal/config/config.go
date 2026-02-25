@@ -11,12 +11,12 @@ import (
 
 type Config struct {
 	Port  int
-	DBUrl string
+	DBURL string
 }
 
 type Overrides struct {
 	Port  *int
-	DBUrl *string
+	DBURL *string
 }
 
 // Apply overrides cfg with provided fields
@@ -24,13 +24,13 @@ func (cfg *Config) Apply(overrides Overrides) {
 	if overrides.Port != nil {
 		cfg.Port = *overrides.Port
 	}
-	if overrides.DBUrl != nil {
-		cfg.DBUrl = *overrides.DBUrl
+	if overrides.DBURL != nil {
+		cfg.DBURL = *overrides.DBURL
 	}
 }
 
 // Load loads configuration from environment after loading a configuration
-// from config file by path. 
+// from config file by path.
 func Load(path string) (Config, error) {
 	if path != "" {
 		if err := godotenv.Load(path); err != nil {
@@ -39,7 +39,7 @@ func Load(path string) (Config, error) {
 	} else {
 		_ = godotenv.Load()
 	}
-  
+
 	cfg, err := fromEnv()
 	if err != nil {
 		return Config{}, fmt.Errorf("failed to read config from environment: %w", err)
@@ -60,14 +60,14 @@ func fromEnv() (Config, error) {
 
 	return Config{
 		Port:  port,
-		DBUrl: os.Getenv("DB_URL"),
+		DBURL: os.Getenv("DB_URL"),
 	}, nil
 }
 
 func validate(cfg Config) error {
 	var errs []error
 
-	if cfg.DBUrl == "" {
+	if cfg.DBURL == "" {
 		errs = append(errs, fmt.Errorf("required environment variable DB_URL is not set"))
 	}
 
@@ -80,7 +80,7 @@ func validate(cfg Config) error {
 
 // returns defaultVal if not set
 func getIntEnv(key string, defaultVal int) (int, error) {
-	val := os.Getenv(key) 
+	val := os.Getenv(key)
 	if val == "" {
 		return defaultVal, nil
 	}

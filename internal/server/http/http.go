@@ -6,8 +6,8 @@ import (
 )
 
 type HTTPConfig struct {
-	Port int
-	DBUrl string
+	Port  int
+	DBURL string
 }
 
 func NewHTTPServer(cfg HTTPConfig, mux *http.ServeMux, db *sql.DB) *http.Server {

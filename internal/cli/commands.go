@@ -99,10 +99,10 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 	}
 	log.Print("Container started")
 
-	dbUrl := fmt.Sprintf("postgres://demo:demo@localhost:%d/demo?sslmode=disable", dbPort)
+	dbURL := fmt.Sprintf("postgres://demo:demo@localhost:%d/demo?sslmode=disable", dbPort)
 
 	log.Print("Initializing database connection...")
-	db, err := sql.Open("postgres", dbUrl)
+	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Printf("Failed to initialize database connection: %v", err)
 		return ExitRuntime
@@ -127,7 +127,7 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 	log.Print("Database is ready")
 
 	log.Print("Running migrations...")
-	if err := runMigrations(dbUrl); err != nil {
+	if err := runMigrations(dbURL); err != nil {
 		log.Printf("Failed to apply migrations: %v", err)
 		return ExitRuntime
 	}
@@ -141,7 +141,7 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 
 	HTTPConfig := httpServer.HTTPConfig{
 		Port:  cfg.Port,
-		DBUrl: dbUrl,
+		DBURL: dbURL,
 	}
 	mux := http.NewServeMux()
 
@@ -166,7 +166,7 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 	}
 
 	log.Print("Initializing database connection...")
-	db, err := sql.Open("postgres", cfg.DBUrl)
+	db, err := sql.Open("postgres", cfg.DBURL)
 	if err != nil {
 		log.Printf("Failed to initialize database connection: %v", err)
 		return ExitRuntime
@@ -180,14 +180,14 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 	log.Print("Database is ready")
 
 	log.Print("Running migrations...")
-	if err := runMigrations(cfg.DBUrl); err != nil {
+	if err := runMigrations(cfg.DBURL); err != nil {
 		log.Printf("Failed to apply migrations: %v", err)
 		return ExitRuntime
 	}
 
 	HTTPConfig := httpServer.HTTPConfig{
 		Port:  cfg.Port,
-		DBUrl: cfg.DBUrl,
+		DBURL: cfg.DBURL,
 	}
 	mux := http.NewServeMux()
 
@@ -213,13 +213,13 @@ func loadConfig(cr *CommandRunner) (config.Config, error) {
 
 }
 
-func runMigrations(dbUrl string) error {
+func runMigrations(dbURL string) error {
 	d, err := iofs.New(migrations.FS, ".")
 	if err != nil {
 		return fmt.Errorf("failed to get migrations from file system: %v", err)
 	}
 
-	m, err := migrate.NewWithSourceInstance("iofs", d, dbUrl)
+	m, err := migrate.NewWithSourceInstance("iofs", d, dbURL)
 	if err != nil {
 		return fmt.Errorf("failed to set up migration: %v", err)
 	}
@@ -242,7 +242,6 @@ func findFreePort() (port int, err error) {
 	return port, nil
 }
 
-
 const helpText = `Feature Flag Gatekeeper (ffg)
 
 Usage:
@@ -261,4 +260,3 @@ Examples:
   ffg serve --config config.yaml
   ffg demo
 `
-
