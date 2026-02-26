@@ -1,15 +1,21 @@
 services:
-  postgres:
-    image: postgres:16
+  db:
+    image: postgres:16-alpine
+    container_name: ffg_db
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ffg
     ports:
-      - "5433:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - "5432:5432"
 
-volumes:
-  pgdata:
+  app:
+    build: .
+    container_name: ffg_app
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: postgres://postgres:postgres@db:5432/ffg?sslmode=disable
