@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"net/http"
 	"os/exec"
 	"time"
 
@@ -143,11 +142,9 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 
 	HTTPConfig := httpServer.HTTPConfig{
 		Port:  cfg.Port,
-		DBURL: dbURL,
 	}
-	mux := http.NewServeMux()
 
-	server := httpServer.NewHTTPServer(HTTPConfig, mux, db)
+	server := httpServer.NewHTTPServer(HTTPConfig, db)
 
 	log.Printf("Server starting on port %d...", cfg.Port)
 	err = server.ListenAndServe()
@@ -189,11 +186,9 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 
 	HTTPConfig := httpServer.HTTPConfig{
 		Port:  cfg.Port,
-		DBURL: cfg.DBURL,
 	}
-	mux := http.NewServeMux()
 
-	server := httpServer.NewHTTPServer(HTTPConfig, mux, db)
+	server := httpServer.NewHTTPServer(HTTPConfig, db)
 
 	log.Printf("Server starting on port %d...", cfg.Port)
 	err = server.ListenAndServe()
