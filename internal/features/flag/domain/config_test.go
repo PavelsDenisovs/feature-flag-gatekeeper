@@ -31,10 +31,10 @@ func TestBucket(t *testing.T) {
 
 func TestRule_Evaluate(t *testing.T) {
 	assert := assert.New(t)
-	tests := []struct{
-		name string
-		rule Rule
-		eval EvaluationContext
+	tests := []struct {
+		name                  string
+		rule                  Rule
+		eval                  EvaluationContext
 		expectedResult        bool
 		expectedMatch         bool
 		expectErr             bool
@@ -47,10 +47,10 @@ func TestRule_Evaluate(t *testing.T) {
 					Rollout: ptr.Int(50),
 				},
 			},
-			eval: EvaluationContext{},
-			expectedResult: false,
-			expectedMatch: false,
-			expectErr: true,
+			eval:                  EvaluationContext{},
+			expectedResult:        false,
+			expectedMatch:         false,
+			expectErr:             true,
 			expectedMissingFields: []Field{RolloutKeyField, FlagKeyField},
 		},
 		{
@@ -60,10 +60,10 @@ func TestRule_Evaluate(t *testing.T) {
 					Rollout: ptr.Int(50),
 				},
 			},
-			eval: EvaluationContext{},
-			expectedResult: false,
-			expectedMatch: false,
-			expectErr: true,
+			eval:                  EvaluationContext{},
+			expectedResult:        false,
+			expectedMatch:         false,
+			expectErr:             true,
 			expectedMissingFields: []Field{FlagKeyField, RolloutKeyField},
 		},
 		{
@@ -76,9 +76,9 @@ func TestRule_Evaluate(t *testing.T) {
 			eval: EvaluationContext{
 				FlagKey: "abc",
 			},
-			expectedResult: false,
-			expectedMatch: false,
-			expectErr: true,
+			expectedResult:        false,
+			expectedMatch:         false,
+			expectErr:             true,
 			expectedMissingFields: []Field{RolloutKeyField},
 		},
 		{
@@ -91,9 +91,9 @@ func TestRule_Evaluate(t *testing.T) {
 			eval: EvaluationContext{
 				RolloutKey: "abc",
 			},
-			expectedResult: false,
-			expectedMatch: false,
-			expectErr: true,
+			expectedResult:        false,
+			expectedMatch:         false,
+			expectErr:             true,
 			expectedMissingFields: []Field{FlagKeyField},
 		},
 		{
@@ -105,15 +105,15 @@ func TestRule_Evaluate(t *testing.T) {
 			},
 			eval: EvaluationContext{
 				RolloutKey: "abc",
-				FlagKey: "def",
+				FlagKey:    "def",
 			},
-			expectedResult: true,
-			expectedMatch: true,
-			expectErr: false,
+			expectedResult:        true,
+			expectedMatch:         true,
+			expectErr:             false,
 			expectedMissingFields: []Field{},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result, match, err := tt.rule.Evaluate(tt.eval)
@@ -139,7 +139,7 @@ func evaluateMissingFields(assert *assert.Assertions, err error, expectedMissing
 	}
 }
 
-func sortFieldSlices(slices... []Field) {
+func sortFieldSlices(slices ...[]Field) {
 	for _, sl := range slices {
 		var temp []string
 		for _, f := range sl {

@@ -9,35 +9,17 @@ import (
 
 func TestEvaluate(t *testing.T) {
 	assert := assert.New(t)
-	tests := []struct{
-		name   string
-		config Config
-		eval   EvaluationContext
+	tests := []struct {
+		name           string
+		enabled        bool
+		config         Config
+		eval           EvaluationContext
 		expectedResult bool
 		expectErr      bool
 	}{
 		{
-			name: "no_rules_default_true",
-			config: Config{
-				Default: true,
-			},
-			eval: EvaluationContext{},
-			expectedResult: true,
-			expectErr: false,
-		},
-		{
-			name: "no_rules_default_false",
-			config: Config{
-				Default: false,
-			},
-			eval: EvaluationContext{
-				FlagKey: "abc",
-			},
-			expectedResult: false,
-			expectErr: false,
-		},
-		{
-			name: "rollout_rule_100",
+			name:    "flag_disabled",
+			enabled: false,
 			config: Config{
 				Default: false,
 				Rules: []Rule{
@@ -49,14 +31,57 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 			eval: EvaluationContext{
+				FlagKey:    "abc",
+				RolloutKey: "def",
+			},
+			expectedResult: false,
+			expectErr:      false,
+		},
+		{
+			name:    "no_rules_default_true",
+			enabled: true,
+			config: Config{
+				Default: true,
+			},
+			eval:           EvaluationContext{},
+			expectedResult: true,
+			expectErr:      false,
+		},
+		{
+			name:    "no_rules_default_false",
+			enabled: true,
+			config: Config{
+				Default: false,
+			},
+			eval: EvaluationContext{
 				FlagKey: "abc",
+			},
+			expectedResult: false,
+			expectErr:      false,
+		},
+		{
+			name:    "rollout_rule_100",
+			enabled: true,
+			config: Config{
+				Default: false,
+				Rules: []Rule{
+					Rule{
+						Action: Action{
+							Rollout: ptr.Int(100),
+						},
+					},
+				},
+			},
+			eval: EvaluationContext{
+				FlagKey:    "abc",
 				RolloutKey: "def",
 			},
 			expectedResult: true,
-			expectErr: false,
+			expectErr:      false,
 		},
 		{
-			name: "rollout_rule_0",
+			name:    "rollout_rule_0",
+			enabled: true,
 			config: Config{
 				Default: true,
 				Rules: []Rule{
@@ -68,33 +93,15 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 			eval: EvaluationContext{
-				FlagKey: "abc",
+				FlagKey:    "abc",
 				RolloutKey: "def",
 			},
 			expectedResult: false,
-			expectErr: false,
+			expectErr:      false,
 		},
 		{
-			name: "rollout_rule_0",
-			config: Config{
-				Default: true,
-				Rules: []Rule{
-					Rule{
-						Action: Action{
-							Rollout: ptr.Int(0),
-						},
-					},
-				},
-			},
-			eval: EvaluationContext{
-				FlagKey: "abc",
-				RolloutKey: "def",
-			},
-			expectedResult: false,
-			expectErr: false,
-		},
-		{
-			name: "no_rollout_key",
+			name:    "no_rollout_key",
+			enabled: true,
 			config: Config{
 				Default: true,
 				Rules: []Rule{
@@ -109,10 +116,11 @@ func TestEvaluate(t *testing.T) {
 				FlagKey: "def",
 			},
 			expectedResult: false,
-			expectErr: true,
+			expectErr:      true,
 		},
 		{
-			name: "no_flag_key",
+			name:    "no_flag_key",
+			enabled: true,
 			config: Config{
 				Default: true,
 				Rules: []Rule{
@@ -127,10 +135,11 @@ func TestEvaluate(t *testing.T) {
 				RolloutKey: "abc",
 			},
 			expectedResult: false,
-			expectErr: true,
+			expectErr:      true,
 		},
 		{
-			name: "no_flag_key_and_rollout_key",
+			name:    "no_flag_key_and_rollout_key",
+			enabled: true,
 			config: Config{
 				Default: true,
 				Rules: []Rule{
@@ -141,15 +150,15 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			eval: EvaluationContext{},
+			eval:           EvaluationContext{},
 			expectedResult: false,
-			expectErr: true,
+			expectErr:      true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := Evaluate(tt.config, tt.eval)
+			result, err := Evaluate(tt.enabled, tt.config, tt.eval)
 			assert.Equal(tt.expectedResult, result, tt.name)
 			assert.Equal(tt.expectErr, err != nil, tt.name)
 		})

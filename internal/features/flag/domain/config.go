@@ -30,11 +30,13 @@ type Action struct {
 }
 
 type ActionType string
+
 const (
 	ActionTypeRollout ActionType = "rollout"
 )
 
 type Field string
+
 const (
 	RolloutKeyField Field = "rollout_key"
 	FlagKeyField    Field = "flag_key"
@@ -52,7 +54,7 @@ func (r *Rule) Evaluate(eval EvaluationContext) (result, match bool, err error) 
 	mfe := MissingFieldError{
 		Fields: make([]Field, 0),
 	}
-	
+
 	if eval.RolloutKey == "" {
 		mfe.Fields = append(mfe.Fields, RolloutKeyField)
 	}

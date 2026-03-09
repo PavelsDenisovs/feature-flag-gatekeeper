@@ -6,7 +6,10 @@ type EvaluationContext struct {
 	FlagKey    string
 }
 
-func Evaluate(config Config, eval EvaluationContext) (bool, error) {
+func Evaluate(enabled bool, config Config, eval EvaluationContext) (bool, error) {
+	if !enabled {
+		return false, nil
+	}
 	for _, rule := range config.Rules {
 		result, match, err := rule.Evaluate(eval)
 		if err != nil {
@@ -18,4 +21,3 @@ func Evaluate(config Config, eval EvaluationContext) (bool, error) {
 	}
 	return config.Default, nil
 }
-
