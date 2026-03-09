@@ -17,12 +17,23 @@ func TestEvaluate(t *testing.T) {
 		expectErr      bool
 	}{
 		{
-			name: "no_rules",
+			name: "no_rules_default_true",
 			config: Config{
 				Default: true,
 			},
 			eval: EvaluationContext{},
 			expectedResult: true,
+			expectErr: false,
+		},
+		{
+			name: "no_rules_default_false",
+			config: Config{
+				Default: false,
+			},
+			eval: EvaluationContext{
+				FlagKey: "abc",
+			},
+			expectedResult: false,
 			expectErr: false,
 		},
 		{
@@ -38,8 +49,8 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 			eval: EvaluationContext{
-				RolloutKey: "abc",
-				FlagKey: "def",
+				FlagKey: "abc",
+				RolloutKey: "def",
 			},
 			expectedResult: true,
 			expectErr: false,
@@ -57,8 +68,8 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 			eval: EvaluationContext{
-				RolloutKey: "abc",
-				FlagKey: "def",
+				FlagKey: "abc",
+				RolloutKey: "def",
 			},
 			expectedResult: false,
 			expectErr: false,
@@ -76,8 +87,8 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 			eval: EvaluationContext{
-				RolloutKey: "abc",
-				FlagKey: "def",
+				FlagKey: "abc",
+				RolloutKey: "def",
 			},
 			expectedResult: false,
 			expectErr: false,
@@ -139,8 +150,8 @@ func TestEvaluate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result, err := Evaluate(tt.config, tt.eval)
-			assert.Equal(tt.expectedResult, result)
-			assert.Equal(tt.expectErr, err != nil)
+			assert.Equal(tt.expectedResult, result, tt.name)
+			assert.Equal(tt.expectErr, err != nil, tt.name)
 		})
 	}
 }

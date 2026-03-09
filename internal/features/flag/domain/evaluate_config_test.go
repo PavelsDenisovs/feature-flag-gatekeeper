@@ -117,20 +117,29 @@ func TestRule_Evaluate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result, match, err := tt.rule.Evaluate(tt.eval)
-			assert.Equal(tt.expectErr, err != nil)
-			assert.Equal(tt.expectedMatch, match)
-			assert.Equal(tt.expectedResult, result)
+			assert.Equal(tt.expectErr, err != nil, tt.name)
+			assert.Equal(tt.expectedMatch, match, tt.name)
+			assert.Equal(tt.expectedResult, result, tt.name)
 
-			if err != nil {
-				missingFields := err.(MissingFieldError).Fields
-				assert.Equal(len(tt.expectedMissingFields), len(missingFields))
-
-				sortFieldSlices(tt.expectedMissingFields, missingFields)
-				assert.Equal(tt.expectedMissingFields, missingFields)
-			}
+			evaluateMissingFields(assert, err, tt.expectedMissingFields, tt.name)
 		})
 	}
 }
+
+
+func evaluateMissingFields(assert *assert.Assertions, err error, expectedMissingFields []Field, testName string) {
+	if err != nil {
+		errMissingFields, ok := err.(MissingFieldError)
+		if ok {
+			missingFields := errMissingFields.Fields
+			if assert.Equal(len(expectedMissingFields), len(missingFields), testName) {
+				sortFieldSlices(expectedMissingFields, missingFields)
+				assert.Equal(expectedMissingFields, missingFields, testName)
+			}
+		}
+	}
+}
+
 
 func sortFieldSlices(slices... []Field) {
 	for _, sl := range slices {
