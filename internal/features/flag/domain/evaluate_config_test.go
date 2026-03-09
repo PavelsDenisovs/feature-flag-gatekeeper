@@ -126,7 +126,6 @@ func TestRule_Evaluate(t *testing.T) {
 	}
 }
 
-
 func evaluateMissingFields(assert *assert.Assertions, err error, expectedMissingFields []Field, testName string) {
 	if err != nil {
 		errMissingFields, ok := err.(MissingFieldError)
@@ -139,7 +138,6 @@ func evaluateMissingFields(assert *assert.Assertions, err error, expectedMissing
 		}
 	}
 }
-
 
 func sortFieldSlices(slices... []Field) {
 	for _, sl := range slices {
