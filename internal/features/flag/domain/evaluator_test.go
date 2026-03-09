@@ -23,7 +23,7 @@ func TestEvaluate(t *testing.T) {
 			config: Config{
 				Default: false,
 				Rules: []Rule{
-					Rule{
+					{
 						Action: Action{
 							Rollout: ptr.Int(100),
 						},
@@ -65,7 +65,7 @@ func TestEvaluate(t *testing.T) {
 			config: Config{
 				Default: false,
 				Rules: []Rule{
-					Rule{
+					{
 						Action: Action{
 							Rollout: ptr.Int(100),
 						},
@@ -85,7 +85,7 @@ func TestEvaluate(t *testing.T) {
 			config: Config{
 				Default: true,
 				Rules: []Rule{
-					Rule{
+					{
 						Action: Action{
 							Rollout: ptr.Int(0),
 						},
@@ -105,7 +105,7 @@ func TestEvaluate(t *testing.T) {
 			config: Config{
 				Default: true,
 				Rules: []Rule{
-					Rule{
+					{
 						Action: Action{
 							Rollout: ptr.Int(0),
 						},
@@ -124,7 +124,7 @@ func TestEvaluate(t *testing.T) {
 			config: Config{
 				Default: true,
 				Rules: []Rule{
-					Rule{
+					{
 						Action: Action{
 							Rollout: ptr.Int(0),
 						},
@@ -143,7 +143,7 @@ func TestEvaluate(t *testing.T) {
 			config: Config{
 				Default: true,
 				Rules: []Rule{
-					Rule{
+					{
 						Action: Action{
 							Rollout: ptr.Int(0),
 						},
