@@ -1,6 +1,14 @@
 package application
 
-type Repository interface {}
+import (
+	"context"
+
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/domain"
+)
+
+type Repository interface {
+	FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error)
+}
 
 type Service interface {}
 
