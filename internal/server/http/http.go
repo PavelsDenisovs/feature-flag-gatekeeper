@@ -15,9 +15,9 @@ type HTTPConfig struct {
 	Port  int
 }
 
-func NewHTTPServer(cfg HTTPConfig, db *sql.DB) *http.Server {
-	repo := flagrepo.NewRepository(db)
-	flagService := flagapp.NewService(repo)
+func New(cfg HTTPConfig, db *sql.DB) *http.Server {
+	repo := flagrepo.New(db)
+	flagService := flagapp.New(repo)
 
 	mux := http.NewServeMux()
 

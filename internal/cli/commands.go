@@ -144,7 +144,7 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 		Port:  cfg.Port,
 	}
 
-	server := httpServer.NewHTTPServer(HTTPConfig, db)
+	server := httpServer.New(HTTPConfig, db)
 
 	log.Printf("Server starting on port %d...", cfg.Port)
 	err = server.ListenAndServe()
@@ -188,7 +188,7 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 		Port:  cfg.Port,
 	}
 
-	server := httpServer.NewHTTPServer(HTTPConfig, db)
+	server := httpServer.New(HTTPConfig, db)
 
 	log.Printf("Server starting on port %d...", cfg.Port)
 	err = server.ListenAndServe()

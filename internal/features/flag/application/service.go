@@ -8,7 +8,7 @@ type service struct {
 	repo Repository
 }
 
-func NewService(repo Repository) *service {
+func New(repo Repository) *service {
 	if repo == nil {
     panic("nil repository")
   }
