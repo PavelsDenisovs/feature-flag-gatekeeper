@@ -21,7 +21,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "flag_disabled",
 			enabled: false,
 			config: Config{
-				Default: false,
+				Default: ptr.Bool(false),
 				Rules: []Rule{
 					{
 						Action: Action{
@@ -41,7 +41,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "no_rules_default_true",
 			enabled: true,
 			config: Config{
-				Default: true,
+				Default: ptr.Bool(true),
 			},
 			eval:           EvaluationContext{},
 			expectedResult: true,
@@ -51,7 +51,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "no_rules_default_false",
 			enabled: true,
 			config: Config{
-				Default: false,
+				Default: ptr.Bool(false),
 			},
 			eval: EvaluationContext{
 				FlagKey: "abc",
@@ -63,7 +63,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "rollout_rule_100",
 			enabled: true,
 			config: Config{
-				Default: false,
+				Default: ptr.Bool(false),
 				Rules: []Rule{
 					{
 						Action: Action{
@@ -83,7 +83,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "rollout_rule_0",
 			enabled: true,
 			config: Config{
-				Default: true,
+				Default: ptr.Bool(true),
 				Rules: []Rule{
 					{
 						Action: Action{
@@ -103,7 +103,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "no_rollout_key",
 			enabled: true,
 			config: Config{
-				Default: true,
+				Default: ptr.Bool(true),
 				Rules: []Rule{
 					{
 						Action: Action{
@@ -122,7 +122,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "no_flag_key",
 			enabled: true,
 			config: Config{
-				Default: true,
+				Default: ptr.Bool(true),
 				Rules: []Rule{
 					{
 						Action: Action{
@@ -141,7 +141,7 @@ func TestEvaluate(t *testing.T) {
 			name:    "no_flag_key_and_rollout_key",
 			enabled: true,
 			config: Config{
-				Default: true,
+				Default: ptr.Bool(true),
 				Rules: []Rule{
 					{
 						Action: Action{
@@ -151,6 +151,25 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 			eval:           EvaluationContext{},
+			expectedResult: false,
+			expectErr:      true,
+		},
+		{
+			name:    "default_not_present",
+			enabled: true,
+			config: Config{
+				Rules: []Rule{
+					{
+						Action: Action{
+							Rollout: ptr.Int(100),
+						},
+					},
+				},
+			},
+			eval: EvaluationContext{
+				FlagKey:    "abc",
+				RolloutKey: "def",
+			},
 			expectedResult: false,
 			expectErr:      true,
 		},

@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	Default bool
+	Default *bool
 	Rules   []Rule
 }
 

@@ -1,5 +1,7 @@
 package domain
 
+import "fmt"
+
 type EvaluationContext struct {
 	// Any identificator to be used for bucket creation (e.g. UserID the most common, OrganizationID, SessionID)
 	RolloutKey string
@@ -10,6 +12,9 @@ func Evaluate(enabled bool, config Config, eval EvaluationContext) (bool, error)
 	if !enabled {
 		return false, nil
 	}
+	if config.Default == nil {
+		return false, fmt.Errorf("config.Default is missing")
+	}
 	for _, rule := range config.Rules {
 		result, match, err := rule.Evaluate(eval)
 		if err != nil {
@@ -19,5 +24,5 @@ func Evaluate(enabled bool, config Config, eval EvaluationContext) (bool, error)
 			return result, nil
 		}
 	}
-	return config.Default, nil
+	return *config.Default, nil
 }
