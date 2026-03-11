@@ -8,7 +8,7 @@ import (
 
 	flagapp "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/application"
 	flaghttp "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/http"
-	flagrepo "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/infra/postgres"
+	flagpq "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/infra/postgres"
 )
 
 type HTTPConfig struct {
@@ -16,7 +16,7 @@ type HTTPConfig struct {
 }
 
 func New(cfg HTTPConfig, db *sql.DB) *http.Server {
-	repo := flagrepo.New(db)
+	repo := flagpq.New(db)
 	flagService := flagapp.New(repo)
 
 	mux := http.NewServeMux()
