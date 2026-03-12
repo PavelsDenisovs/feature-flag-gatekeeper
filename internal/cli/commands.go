@@ -9,13 +9,10 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/PavelsDenisovs/feature-flag-gatekeeper/db/migrations"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/config"
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/database/migrator"
 	httpServer "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/server/http"
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/lib/pq"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 )
 
 type CommandRunner struct {
@@ -128,7 +125,7 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 	log.Print("Database is ready")
 
 	log.Print("Running migrations...")
-	if err := runMigrations(dbURL); err != nil {
+	if err := migrator.ApplyMigrations(dbURL); err != nil {
 		log.Printf("Failed to apply migrations: %v", err)
 		return ExitRuntime
 	}
@@ -179,7 +176,7 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 	log.Print("Database is ready")
 
 	log.Print("Running migrations...")
-	if err := runMigrations(cfg.DBURL); err != nil {
+	if err := migrator.ApplyMigrations(cfg.DBURL); err != nil {
 		log.Printf("Failed to apply migrations: %v", err)
 		return ExitRuntime
 	}
@@ -210,24 +207,6 @@ func loadConfig(cr *CommandRunner) (config.Config, error) {
 
 }
 
-func runMigrations(dbURL string) error {
-	d, err := iofs.New(migrations.FS, ".")
-	if err != nil {
-		return fmt.Errorf("failed to get migrations from file system: %v", err)
-	}
-
-	m, err := migrate.NewWithSourceInstance("iofs", d, dbURL)
-	if err != nil {
-		return fmt.Errorf("failed to set up migration: %v", err)
-	}
-
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		return fmt.Errorf("failed to run migrations: %v", err)
-	}
-
-	return nil
-}
-
 func findFreePort() (port int, err error) {
 	ln, err := net.Listen("tcp", ":0")
 	if err != nil {
@@ -239,7 +218,8 @@ func findFreePort() (port int, err error) {
 	return port, nil
 }
 
-const helpText = `Feature Flag Gatekeeper (ffg)
+const helpText = `
+Feature Flag Gatekeeper (ffg)
 
 Usage:
   ffg <command> [flags]
