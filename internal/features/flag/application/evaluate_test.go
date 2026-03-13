@@ -13,8 +13,6 @@ import (
 
 func TestEvaluate(t *testing.T) {
 	for _, tt := range evaluateTests {
-		tt := tt
-		
 		t.Run(tt.name, func(t *testing.T) {
 			assert := assert.New(t)
 			repo := tt.setupRepo()
