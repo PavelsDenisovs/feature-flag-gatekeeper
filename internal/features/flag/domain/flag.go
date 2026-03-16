@@ -1,8 +1,13 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Flag struct {
+	ID        uuid.UUID
 	Key       string
 	Config    Config
 	Enabled   bool
