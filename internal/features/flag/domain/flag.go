@@ -7,10 +7,11 @@ import (
 )
 
 type Flag struct {
-	ID        uuid.UUID
-	Key       string
-	Config    Config
-	Enabled   bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uuid.UUID
+	Key         string
+	Enabled     bool
+	Description string
+	Config      Config
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
