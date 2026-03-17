@@ -1,0 +1,2 @@
+DROP INDEX IF EXISTS idx_flag_key;
+DROP TABLE IF EXISTS flags;

@@ -1,0 +1,15 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS flags (
+  id UUID PRIMARY KEY,
+  flag_key TEXT UNIQUE NOT NULL,
+  enabled BOOL NOT NULL DEFAULT false,
+  description TEXT NOT NULL DEFAULT '',
+  config JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_flag_key ON flags (flag_key);
+
+COMMIT;
