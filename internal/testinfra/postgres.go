@@ -3,16 +3,15 @@
 package testinfra
 
 import (
+	"context"
 	"testing"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
-func SetupPostgres(t *testing.T) (connStr string) {
+func SetupPostgres(ctx context.Context, t *testing.T) (connStr string) {
 	t.Helper()
-
-	ctx := t.Context()
 
 	pqContainer, err := postgres.Run(
 		ctx, "postgres:16-alpine",
