@@ -22,19 +22,19 @@ func SetupPostgres(t *testing.T) (connStr string) {
 		postgres.BasicWaitStrategies(),
 	)
 	if err != nil {
-		t.Fatalf("Failed to start container: %w", err)
+		t.Fatalf("Failed to start container: %v", err)
 		return ""
 	}
 
 	t.Cleanup(func() {
 		if err := testcontainers.TerminateContainer(pqContainer.Container); err != nil {
-			t.Logf("Failed to terminate container: %w", err)
+			t.Logf("Failed to terminate container: %v", err)
 		}
 	})
 
 	connStr, err = pqContainer.ConnectionString(ctx)
 	if err != nil {
-		t.Fatalf("Failed to get connection string from container: %w", err)
+		t.Fatalf("Failed to get connection string from container: %v", err)
 		return ""
 	}
 
