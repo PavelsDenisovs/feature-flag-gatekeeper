@@ -32,7 +32,7 @@ func SetupPostgres(t *testing.T) (connStr string) {
 		}
 	})
 
-	connStr, err = pqContainer.ConnectionString(ctx)
+	connStr, err = pqContainer.ConnectionString(ctx, "sslmode=disable")
 	if err != nil {
 		t.Fatalf("Failed to get connection string from container: %v", err)
 		return ""
