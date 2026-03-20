@@ -10,7 +10,9 @@ type Repository interface {
 	FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error)
 }
 
-type Service interface {}
+type Service interface {
+	Evaluate(ctx context.Context, req EvaluateRequest) (res EvaluateResponse, err error)
+}
 
 type service struct {
 	repo Repository
@@ -18,7 +20,7 @@ type service struct {
 
 func New(repo Repository) *service {
 	if repo == nil {
-    panic("nil repository")
-  }
+		panic("nil repository")
+	}
 	return &service{repo: repo}
 }
