@@ -1,6 +1,11 @@
 package domain
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrFlagNotFound = errors.New("flag not found")
 
 type EvaluationContext struct {
 	// Any identificator to be used for bucket creation (e.g. UserID the most common, OrganizationID, SessionID)
