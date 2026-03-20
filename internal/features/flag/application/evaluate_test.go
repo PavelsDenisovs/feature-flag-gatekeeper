@@ -18,7 +18,7 @@ func TestEvaluate(t *testing.T) {
 			ctx := t.Context()
 
 			res, err := svc.Evaluate(ctx, tt.req)
-			
+
 			assert.Equal(tt.expectErr, err != nil)
 
 			if err != nil {
@@ -38,316 +38,316 @@ func TestEvaluate(t *testing.T) {
 
 var errFetch = errors.New("some error")
 
-var evaluateTests = []struct{
-		name        string
-		req         EvaluateRequest
-		setupRepo   func() *mockFlagRepository
-		expectedRes EvaluateResponse
-		expectErr   bool
-		expectedErr error
-	}{
-		{
-			name: "no_flag_key",
-			req: EvaluateRequest{
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: true,
+var evaluateTests = []struct {
+	name        string
+	req         EvaluateRequest
+	setupRepo   func() *mockFlagRepository
+	expectedRes EvaluateResponse
+	expectErr   bool
+	expectedErr error
+}{
+	{
+		name: "no_flag_key",
+		req: EvaluateRequest{
+			RolloutKey: "abc",
 		},
-		{
-			name: "no_matching_flag_by_key",
-			req: EvaluateRequest{
-				FlagKey: "abc",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{},
-							Enabled: true,
-						},
-						{
-							Key: "b",
-							Config: domain.Config{},
-							Enabled: true,
-						},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{}
+		},
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr: true,
+	},
+	{
+		name: "no_matching_flag_by_key",
+		req: EvaluateRequest{
+			FlagKey:    "abc",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key:     "a",
+						Config:  domain.Config{},
+						Enabled: true,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: true,
+					{
+						Key:     "b",
+						Config:  domain.Config{},
+						Enabled: true,
+					},
+				},
+			}
 		},
-		{
-			name: "matching_flag_with_no_rules",
-			req: EvaluateRequest{
-				FlagKey: "a",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-							},
-							Enabled: true,
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr: true,
+	},
+	{
+		name: "matching_flag_with_no_rules",
+		req: EvaluateRequest{
+			FlagKey:    "a",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key: "a",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
 						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: true,
 						},
+						Enabled: true,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: true,
-			},
-			expectErr: false,
+				},
+			}
 		},
-		{
-			name: "matching_flag_with_100_rollout",
-			req: EvaluateRequest{
-				FlagKey: "b",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{},
-							Enabled: true,
-						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(false),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+		expectedRes: EvaluateResponse{
+			Enabled: true,
+		},
+		expectErr: false,
+	},
+	{
+		name: "matching_flag_with_100_rollout",
+		req: EvaluateRequest{
+			FlagKey:    "b",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key:     "a",
+						Config:  domain.Config{},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(false),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: true,
 						},
+						Enabled: true,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: true,
-			},
-			expectErr: false,
+				},
+			}
 		},
-		{
-			name: "matching_flag_with_0_rollout",
-			req: EvaluateRequest{
-				FlagKey: "b",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{},
-							Enabled: true,
-						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(0),
-										},
+		expectedRes: EvaluateResponse{
+			Enabled: true,
+		},
+		expectErr: false,
+	},
+	{
+		name: "matching_flag_with_0_rollout",
+		req: EvaluateRequest{
+			FlagKey:    "b",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key:     "a",
+						Config:  domain.Config{},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(0),
 									},
 								},
 							},
-							Enabled: true,
 						},
+						Enabled: true,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: false,
+				},
+			}
 		},
-		{
-			name: "matching_flag_disabled",
-			req: EvaluateRequest{
-				FlagKey: "b",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{},
-							Enabled: true,
-						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr: false,
+	},
+	{
+		name: "matching_flag_disabled",
+		req: EvaluateRequest{
+			FlagKey:    "b",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key:     "a",
+						Config:  domain.Config{},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: false,
 						},
+						Enabled: false,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: false,
+				},
+			}
 		},
-		{
-			name: "no_rollout_key_for_disabled_rollout",
-			req: EvaluateRequest{
-				FlagKey: "b",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{},
-							Enabled: true,
-						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr: false,
+	},
+	{
+		name: "no_rollout_key_for_disabled_rollout",
+		req: EvaluateRequest{
+			FlagKey: "b",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key:     "a",
+						Config:  domain.Config{},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: false,
 						},
+						Enabled: false,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: false,
+				},
+			}
 		},
-		
-		{
-			name: "matching_flag_without_default",
-			req: EvaluateRequest{
-				FlagKey: "a",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr: false,
+	},
+
+	{
+		name: "matching_flag_without_default",
+		req: EvaluateRequest{
+			FlagKey:    "a",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key: "a",
+						Config: domain.Config{
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: true,
 						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: true,
 						},
+						Enabled: true,
 					},
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: true,
+				},
+			}
 		},
-		{
-			name: "injected_error_in_fetch_flag",
-			req: EvaluateRequest{
-				FlagKey: "b",
-				RolloutKey: "abc",
-			},
-			setupRepo: func() *mockFlagRepository {
-				return &mockFlagRepository{
-					flags: []domain.Flag{
-						{
-							Key: "a",
-							Config: domain.Config{},
-							Enabled: true,
-						},
-						{
-							Key: "b",
-							Config: domain.Config{
-								Default: ptr.Bool(true),
-								Rules: []domain.Rule{
-									{
-										Action: domain.Action{
-											Rollout: ptr.Int(100),
-										},
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr: true,
+	},
+	{
+		name: "injected_error_in_fetch_flag",
+		req: EvaluateRequest{
+			FlagKey:    "b",
+			RolloutKey: "abc",
+		},
+		setupRepo: func() *mockFlagRepository {
+			return &mockFlagRepository{
+				flags: []domain.Flag{
+					{
+						Key:     "a",
+						Config:  domain.Config{},
+						Enabled: true,
+					},
+					{
+						Key: "b",
+						Config: domain.Config{
+							Default: ptr.Bool(true),
+							Rules: []domain.Rule{
+								{
+									Action: domain.Action{
+										Rollout: ptr.Int(100),
 									},
 								},
 							},
-							Enabled: true,
 						},
+						Enabled: true,
 					},
-					errFetch: errFetch,
-				}
-			},
-			expectedRes: EvaluateResponse{
-				Enabled: false,
-			},
-			expectErr: true,
-			expectedErr: errFetch,
+				},
+				errFetch: errFetch,
+			}
 		},
-	}
+		expectedRes: EvaluateResponse{
+			Enabled: false,
+		},
+		expectErr:   true,
+		expectedErr: errFetch,
+	},
+}

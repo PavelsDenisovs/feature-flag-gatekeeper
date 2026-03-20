@@ -138,7 +138,7 @@ func (cr *CommandRunner) runDemo() (exitCode int) {
 	}
 
 	HTTPConfig := httpServer.HTTPConfig{
-		Port:  cfg.Port,
+		Port: cfg.Port,
 	}
 
 	server := httpServer.New(HTTPConfig, db)
@@ -182,7 +182,7 @@ func (cr *CommandRunner) runServe() (exitCode int) {
 	}
 
 	HTTPConfig := httpServer.HTTPConfig{
-		Port:  cfg.Port,
+		Port: cfg.Port,
 	}
 
 	server := httpServer.New(HTTPConfig, db)

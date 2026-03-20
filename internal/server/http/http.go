@@ -12,7 +12,7 @@ import (
 )
 
 type HTTPConfig struct {
-	Port  int
+	Port int
 }
 
 func New(cfg HTTPConfig, db *sql.DB) *http.Server {
@@ -24,7 +24,7 @@ func New(cfg HTTPConfig, db *sql.DB) *http.Server {
 	flaghttp.RegisterEndpoints(mux, flagService)
 
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Port), 
+		Addr:         fmt.Sprintf(":%d", cfg.Port),
 		Handler:      mux,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,

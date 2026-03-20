@@ -7,7 +7,7 @@ import (
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/domain"
 )
 
-type mockFlagRepository struct{
+type mockFlagRepository struct {
 	flags    []domain.Flag
 	errFetch error
 }

@@ -5,8 +5,8 @@ import (
 
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/db/migrations"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 )
 
 func ApplyMigrations(dbURL string) error {

@@ -9,4 +9,5 @@ import (
 func RegisterEndpoints(
 	mux *http.ServeMux,
 	service flagapp.Service,
-) {}
+) {
+}

@@ -43,7 +43,7 @@ func (s *service) Evaluate(ctx context.Context, req EvaluateRequest) (res Evalua
 			Enabled: enabled,
 		}, fmt.Errorf("evaluation failed: %w", err)
 	}
-	
+
 	return EvaluateResponse{
 		Enabled: enabled,
 	}, nil
