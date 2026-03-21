@@ -3,7 +3,7 @@ package application
 import (
 	"context"
 
-	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/domain"
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 )
 
 type Repository interface {

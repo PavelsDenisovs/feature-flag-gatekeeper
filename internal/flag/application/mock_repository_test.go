@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/domain"
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 )
 
 type mockFlagRepository struct {

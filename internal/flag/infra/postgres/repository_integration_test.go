@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/database/migrator"
-	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/domain"
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/testinfra"
 	"github.com/aws/smithy-go/ptr"
 	"github.com/google/uuid"

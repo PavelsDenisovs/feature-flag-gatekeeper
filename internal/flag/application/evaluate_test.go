@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/domain"
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	"github.com/aws/smithy-go/ptr"
 	"github.com/stretchr/testify/assert"
 )

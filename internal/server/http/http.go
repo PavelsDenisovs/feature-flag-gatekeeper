@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	flagapp "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/application"
-	flaghttp "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/http"
-	flagpq "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/features/flag/infra/postgres"
+	flagapp "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/application"
+	flaghttp "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/http"
+	flagpq "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/infra/postgres"
 )
 
 type HTTPConfig struct {
