@@ -33,7 +33,7 @@ type flagRow struct {
 func (row *flagRow) fromDomain(f domain.Flag) error {
 	configBytes, err := json.Marshal(f.Config)
 	if err != nil {
-		return fmt.Errorf("marshal config: %w", err)
+		return fmt.Errorf("marshal config field: %w", err)
 	}
 	row.ID = f.ID
 	row.FlagKey = f.Key
