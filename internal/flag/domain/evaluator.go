@@ -5,7 +5,11 @@ import (
 	"fmt"
 )
 
-var ErrFlagNotFound = errors.New("flag not found")
+var (
+	ErrFlagNotFound     = errors.New("flag not found")
+	ErrEvaluationFailed = errors.New("evaluation failed")
+)
+
 
 type EvaluationContext struct {
 	// Any identifier to be used for bucket creation (e.g. UserID the most common, OrganizationID, SessionID)
@@ -23,7 +27,7 @@ func Evaluate(enabled bool, config Config, eval EvaluationContext) (bool, error)
 	for _, rule := range config.Rules {
 		result, match, err := rule.Evaluate(eval)
 		if err != nil {
-			return false, err
+			return false, fmt.Errorf("%w: %w", ErrEvaluationFailed, err)
 		}
 		if match {
 			return result, nil
