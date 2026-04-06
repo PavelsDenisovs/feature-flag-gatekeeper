@@ -6,10 +6,12 @@ import (
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 )
 
+//mockery:generate: true
 type Repository interface {
 	FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error)
 }
 
+//mockery:generate: true
 type Service interface {
 	Evaluate(ctx context.Context, req EvaluateRequest) (res EvaluateResponse, err error)
 }
