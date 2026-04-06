@@ -1,0 +1,16 @@
+all: false
+filename: mocks_test.go
+force-file-write: true
+formatter: goimports
+generate: true
+include-auto-generated: false
+log-level: info
+structname: '{{.Mock}}{{.InterfaceName}}'
+dir: '{{.InterfaceDir}}'
+pkgname: '{{.SrcPackageName}}'
+recursive: true
+require-template-schema-exists: true
+template: testify
+template-schema: '{{.Template}}.schema.json'
+packages:
+  github.com/PavelsDenisovs/feature-flag-gatekeeper:
