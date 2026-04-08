@@ -7,20 +7,20 @@ import (
 )
 
 //mockery:generate: true
-type Repository interface {
+type FlagRepository interface {
 	FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error)
 }
 
 //mockery:generate: true
-type Service interface {
+type FlagService interface {
 	Evaluate(ctx context.Context, req EvaluateRequest) (res EvaluateResponse, err error)
 }
 
 type service struct {
-	repo Repository
+	repo FlagRepository
 }
 
-func New(repo Repository) *service {
+func New(repo FlagRepository) *service {
 	if repo == nil {
 		panic("nil repository")
 	}

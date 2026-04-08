@@ -8,6 +8,6 @@ import (
 
 func RegisterEndpoints(
 	mux *http.ServeMux,
-	service flagapp.Service,
+	service flagapp.FlagService,
 ) {
 }
