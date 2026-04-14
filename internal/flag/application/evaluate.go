@@ -8,7 +8,7 @@ import (
 )
 
 type EvaluateRequest struct {
-	RolloutKey string
+	SubjectKey string
 	FlagKey    string
 }
 
@@ -33,8 +33,8 @@ func (s *service) Evaluate(ctx context.Context, req EvaluateRequest) (res Evalua
 		}, fmt.Errorf("failed to fetch flag by key %s: %w", req.FlagKey, err)
 	}
 
-	enabled, err := domain.Evaluate(flag.Enabled, flag.Config, domain.EvaluationContext{
-		RolloutKey: req.RolloutKey,
+	enabled, err := flag.Evaluate(domain.EvaluationContext{
+		SubjectKey: req.SubjectKey,
 		FlagKey:    req.FlagKey,
 	})
 

@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
-	"github.com/aws/smithy-go/ptr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,7 +48,7 @@ var evaluateTests = []struct {
 	{
 		name: "no_flag_key",
 		req: EvaluateRequest{
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{}
@@ -63,7 +62,7 @@ var evaluateTests = []struct {
 		name: "no_matching_flag_by_key",
 		req: EvaluateRequest{
 			FlagKey:    "abc",
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{
@@ -90,7 +89,7 @@ var evaluateTests = []struct {
 		name: "matching_flag_with_no_rules",
 		req: EvaluateRequest{
 			FlagKey:    "a",
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{
@@ -98,19 +97,23 @@ var evaluateTests = []struct {
 					{
 						Key: "a",
 						Config: domain.Config{
-							Default: ptr.Bool(true),
+							Default: true,
 						},
 						Enabled: true,
 					},
 					{
 						Key: "b",
 						Config: domain.Config{
-							Default: ptr.Bool(true),
+							Default: true,
 							Rules: []domain.Rule{
 								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
+									Conditions: []domain.Condition{
+										{
+											Kind:       domain.ConditionKindRollout,
+											Percentage: 100,
+										},
 									},
+									Result: true,
 								},
 							},
 						},
@@ -128,7 +131,7 @@ var evaluateTests = []struct {
 		name: "matching_flag_with_100_rollout",
 		req: EvaluateRequest{
 			FlagKey:    "b",
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{
@@ -141,12 +144,16 @@ var evaluateTests = []struct {
 					{
 						Key: "b",
 						Config: domain.Config{
-							Default: ptr.Bool(false),
+							Default: false,
 							Rules: []domain.Rule{
 								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
+									Conditions: []domain.Condition{
+										{
+											Kind:       domain.ConditionKindRollout,
+											Percentage: 100,
+										},
 									},
+									Result: true,
 								},
 							},
 						},
@@ -164,7 +171,7 @@ var evaluateTests = []struct {
 		name: "matching_flag_with_0_rollout",
 		req: EvaluateRequest{
 			FlagKey:    "b",
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{
@@ -177,12 +184,16 @@ var evaluateTests = []struct {
 					{
 						Key: "b",
 						Config: domain.Config{
-							Default: ptr.Bool(true),
+							Default: false,
 							Rules: []domain.Rule{
 								{
-									Action: domain.Action{
-										Rollout: ptr.Int(0),
+									Conditions: []domain.Condition{
+										{
+											Kind:       domain.ConditionKindRollout,
+											Percentage: 0,
+										},
 									},
+									Result: true,
 								},
 							},
 						},
@@ -200,7 +211,7 @@ var evaluateTests = []struct {
 		name: "matching_flag_disabled",
 		req: EvaluateRequest{
 			FlagKey:    "b",
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{
@@ -213,12 +224,16 @@ var evaluateTests = []struct {
 					{
 						Key: "b",
 						Config: domain.Config{
-							Default: ptr.Bool(true),
+							Default: false,
 							Rules: []domain.Rule{
 								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
+									Conditions: []domain.Condition{
+										{
+											Kind:       domain.ConditionKindRollout,
+											Percentage: 100,
+										},
 									},
+									Result: true,
 								},
 							},
 						},
@@ -233,7 +248,7 @@ var evaluateTests = []struct {
 		expectErr: false,
 	},
 	{
-		name: "no_rollout_key_for_disabled_rollout",
+		name: "no_subject_key_for_disabled_rollout",
 		req: EvaluateRequest{
 			FlagKey: "b",
 		},
@@ -248,12 +263,16 @@ var evaluateTests = []struct {
 					{
 						Key: "b",
 						Config: domain.Config{
-							Default: ptr.Bool(true),
+							Default: true,
 							Rules: []domain.Rule{
 								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
+									Conditions: []domain.Condition{
+										{
+											Kind:       domain.ConditionKindRollout,
+											Percentage: 100,
+										},
 									},
+									Result: true,
 								},
 							},
 						},
@@ -263,60 +282,15 @@ var evaluateTests = []struct {
 			}
 		},
 		expectedRes: EvaluateResponse{
-			Enabled: false,
+			Enabled: true,
 		},
 		expectErr: false,
-	},
-
-	{
-		name: "matching_flag_without_default",
-		req: EvaluateRequest{
-			FlagKey:    "a",
-			RolloutKey: "abc",
-		},
-		setupRepo: func() *mockFlagRepository {
-			return &mockFlagRepository{
-				flags: []domain.Flag{
-					{
-						Key: "a",
-						Config: domain.Config{
-							Rules: []domain.Rule{
-								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
-									},
-								},
-							},
-						},
-						Enabled: true,
-					},
-					{
-						Key: "b",
-						Config: domain.Config{
-							Default: ptr.Bool(true),
-							Rules: []domain.Rule{
-								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
-									},
-								},
-							},
-						},
-						Enabled: true,
-					},
-				},
-			}
-		},
-		expectedRes: EvaluateResponse{
-			Enabled: false,
-		},
-		expectErr: true,
 	},
 	{
 		name: "injected_error_in_fetch_flag",
 		req: EvaluateRequest{
 			FlagKey:    "b",
-			RolloutKey: "abc",
+			SubjectKey: "abc",
 		},
 		setupRepo: func() *mockFlagRepository {
 			return &mockFlagRepository{
@@ -329,12 +303,16 @@ var evaluateTests = []struct {
 					{
 						Key: "b",
 						Config: domain.Config{
-							Default: ptr.Bool(true),
+							Default: true,
 							Rules: []domain.Rule{
 								{
-									Action: domain.Action{
-										Rollout: ptr.Int(100),
+									Conditions: []domain.Condition{
+										{
+											Kind:       domain.ConditionKindRollout,
+											Percentage: 100,
+										},
 									},
+									Result: true,
 								},
 							},
 						},

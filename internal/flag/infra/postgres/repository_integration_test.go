@@ -13,7 +13,6 @@ import (
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/database/migrator"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/testinfra"
-	"github.com/aws/smithy-go/ptr"
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/require"
@@ -58,12 +57,16 @@ func seedDatabase(ctx context.Context, t *testing.T, db *sql.DB) error {
 	`
 
 	config := domain.Config{
-		Default: ptr.Bool(false),
+		Default: false,
 		Rules: []domain.Rule{
 			{
-				Action: domain.Action{
-					Rollout: ptr.Int(100),
+				Conditions: []domain.Condition{
+					{
+						Kind:       domain.ConditionKindRollout,
+						Percentage: 100,
+					},
 				},
+				Result: true,
 			},
 		},
 	}

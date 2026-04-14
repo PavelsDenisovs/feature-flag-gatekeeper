@@ -1,10 +1,8 @@
 package domain
 
 import (
-	"sort"
 	"testing"
 
-	"github.com/aws/smithy-go/ptr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,125 +27,257 @@ func TestBucket(t *testing.T) {
 	})
 }
 
-func TestRule_Evaluate(t *testing.T) {
-	assert := assert.New(t)
+func TestEvaluateCondition(t *testing.T) {
 	tests := []struct {
-		name                  string
-		rule                  Rule
-		eval                  EvaluationContext
-		expectedResult        bool
-		expectedMatch         bool
-		expectErr             bool
-		expectedMissingFields []Field
+		name          string
+		cond          Condition
+		eval          EvaluationContext
+		expectedMatch bool
+		expectedErr   error
 	}{
 		{
-			name: "missing_rollout_key_and_flag_key",
-			rule: Rule{
-				Action: Action{
-					Rollout: ptr.Int(50),
-				},
+			name: "valid_input_successful_evaluation",
+			cond: Condition{
+				Kind:       ConditionKindRollout,
+				Percentage: 100,
 			},
-			eval:                  EvaluationContext{},
-			expectedResult:        false,
-			expectedMatch:         false,
-			expectErr:             true,
-			expectedMissingFields: []Field{RolloutKeyField, FlagKeyField},
+			eval: EvaluationContext{
+				SubjectKey: "abc",
+				FlagKey:    "abc",
+			},
+			expectedMatch: true,
+			expectedErr:   nil,
 		},
 		{
-			name: "missing_flag_key_and_rollout_key",
-			rule: Rule{
-				Action: Action{
-					Rollout: ptr.Int(50),
-				},
+			name: "valid_input_unsuccessful_evaluation",
+			cond: Condition{
+				Kind:       ConditionKindRollout,
+				Percentage: 0,
 			},
-			eval:                  EvaluationContext{},
-			expectedResult:        false,
-			expectedMatch:         false,
-			expectErr:             true,
-			expectedMissingFields: []Field{FlagKeyField, RolloutKeyField},
+			eval: EvaluationContext{
+				SubjectKey: "abc",
+				FlagKey:    "abc",
+			},
+			expectedMatch: false,
+			expectedErr:   nil,
 		},
 		{
-			name: "missing_rollout_key",
-			rule: Rule{
-				Action: Action{
-					Rollout: ptr.Int(50),
+			name: "unknown_condition_kind",
+			cond: Condition{
+				Kind: ConditionKind("abcabc"),
+			},
+			eval:          EvaluationContext{},
+			expectedMatch: false,
+			expectedErr:   ErrUnknownConditionKind,
+		},
+		{
+			name: "unknown_operator",
+			cond: Condition{
+				Kind:      ConditionKindAttribute,
+				Attribute: "country",
+				Operator:  Operator("abcabc"),
+				Value:     "UK",
+			},
+			eval: EvaluationContext{
+				Attributes: map[string]string{
+					"country": "UK",
 				},
+			},
+			expectedMatch: false,
+			expectedErr:   ErrUnknownOperator,
+		},
+		{
+			name: "missing_subject_key_for_rollout",
+			cond: Condition{
+				Kind:       ConditionKindRollout,
+				Percentage: 100,
 			},
 			eval: EvaluationContext{
 				FlagKey: "abc",
 			},
-			expectedResult:        false,
-			expectedMatch:         false,
-			expectErr:             true,
-			expectedMissingFields: []Field{RolloutKeyField},
+			expectedMatch: false,
+			expectedErr:   ErrIncompleteContext,
 		},
 		{
-			name: "missing_flag_key",
-			rule: Rule{
-				Action: Action{
-					Rollout: ptr.Int(50),
-				},
+			name: "missing_flag_key_for_rollout",
+			cond: Condition{
+				Kind:       ConditionKindRollout,
+				Percentage: 100,
 			},
 			eval: EvaluationContext{
-				RolloutKey: "abc",
+				SubjectKey: "abc",
 			},
-			expectedResult:        false,
-			expectedMatch:         false,
-			expectErr:             true,
-			expectedMissingFields: []Field{FlagKeyField},
+			expectedMatch: false,
+			expectedErr:   ErrIncompleteContext,
 		},
 		{
-			name: "all_fields_present",
-			rule: Rule{
-				Action: Action{
-					Rollout: ptr.Int(100),
-				},
+			name: "missing_attribute",
+			cond: Condition{
+				Kind:      ConditionKindAttribute,
+				Attribute: "country",
+				Operator:  OperatorEquals,
+				Value:     "UK",
 			},
 			eval: EvaluationContext{
-				RolloutKey: "abc",
-				FlagKey:    "def",
+				Attributes: map[string]string{
+					"city": "London",
+				},
 			},
-			expectedResult:        true,
-			expectedMatch:         true,
-			expectErr:             false,
-			expectedMissingFields: []Field{},
+			expectedMatch: false,
+			expectedErr:   ErrIncompleteContext,
+		},
+		{
+			name: "unmatched_value_of_valid_attribute",
+			cond: Condition{
+				Kind:      ConditionKindAttribute,
+				Attribute: "country",
+				Operator:  OperatorEquals,
+				Value:     "UK",
+			},
+			eval: EvaluationContext{
+				Attributes: map[string]string{
+					"country": "GE",
+				},
+			},
+			expectedMatch: false,
+			expectedErr:   nil,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, match, err := tt.rule.Evaluate(tt.eval)
-			assert.Equal(tt.expectErr, err != nil, tt.name)
-			assert.Equal(tt.expectedMatch, match, tt.name)
-			assert.Equal(tt.expectedResult, result, tt.name)
-
-			evaluateMissingFields(assert, err, tt.expectedMissingFields, tt.name)
+			match, err := evaluateCondition(tt.cond, tt.eval)
+			assert.ErrorIs(t, err, tt.expectedErr)
+			assert.Equal(t, tt.expectedMatch, match)
 		})
 	}
 }
 
-func evaluateMissingFields(assert *assert.Assertions, err error, expectedMissingFields []Field, testName string) {
-	if err != nil {
-		errMissingFields, ok := err.(MissingFieldError)
-		if ok {
-			missingFields := errMissingFields.Fields
-			if assert.Equal(len(expectedMissingFields), len(missingFields), testName) {
-				sortFieldSlices(expectedMissingFields, missingFields)
-				assert.Equal(expectedMissingFields, missingFields, testName)
-			}
-		}
+func TestRule_Evaluate(t *testing.T) {
+	tests := []struct {
+		name           string
+		rule           Rule
+		eval           EvaluationContext
+		expectedResult bool
+		expectedMatch  bool
+		expectedErr    error
+	}{
+		{
+			name: "rule_match_result_false",
+			rule: Rule{
+				Conditions: []Condition{
+					{
+						Kind:       ConditionKindRollout,
+						Percentage: 100,
+					},
+				},
+				Result: false,
+			},
+			eval: EvaluationContext{
+				SubjectKey: "abc",
+				FlagKey:    "abc",
+			},
+			expectedResult: false,
+			expectedMatch:  true,
+			expectedErr:    nil,
+		},
+		{
+			name: "one_of_two_conditions_mismatch",
+			rule: Rule{
+				Conditions: []Condition{
+					{
+						Kind:      ConditionKindAttribute,
+						Attribute: "country",
+						Operator:  OperatorEquals,
+						Value:     "UK",
+					},
+					{
+						Kind:      ConditionKindAttribute,
+						Attribute: "city",
+						Operator:  OperatorEquals,
+						Value:     "London",
+					},
+				},
+				Result: true,
+			},
+			eval: EvaluationContext{
+				Attributes: map[string]string{
+					"country": "UK",
+					"city":    "Liverpool",
+				},
+			},
+			expectedResult: false,
+			expectedMatch:  false,
+			expectedErr:    nil,
+		},
+		{
+			name: "all_conditions_match",
+			rule: Rule{
+				Conditions: []Condition{
+					{
+						Kind:      ConditionKindAttribute,
+						Attribute: "country",
+						Operator:  OperatorEquals,
+						Value:     "UK",
+					},
+					{
+						Kind:      ConditionKindAttribute,
+						Attribute: "city",
+						Operator:  OperatorEquals,
+						Value:     "London",
+					},
+				},
+				Result: true,
+			},
+			eval: EvaluationContext{
+				Attributes: map[string]string{
+					"country": "UK",
+					"city":    "London",
+				},
+			},
+			expectedResult: true,
+			expectedMatch:  true,
+			expectedErr:    nil,
+		},
+		{
+			name: "one_condition_fail_one_match",
+			rule: Rule{
+				Conditions: []Condition{
+					{
+						Kind:      ConditionKindAttribute,
+						Attribute: "country",
+						Operator:  OperatorEquals,
+						Value:     "UK",
+					},
+					{
+						Kind:      ConditionKindAttribute,
+						Attribute: "city",
+						Operator:  OperatorEquals,
+						Value:     "London",
+					},
+				},
+				Result: true,
+			},
+			eval: EvaluationContext{
+				Attributes: map[string]string{
+					"continent": "Europe",
+					"city":      "London",
+				},
+			},
+			expectedResult: false,
+			expectedMatch:  false,
+			expectedErr:    ErrIncompleteContext,
+		},
 	}
-}
 
-func sortFieldSlices(slices ...[]Field) {
-	for _, sl := range slices {
-		var temp []string
-		for _, f := range sl {
-			temp = append(temp, string(f))
-		}
-		sort.Strings(temp)
-		for i, str := range temp {
-			sl[i] = Field(str[i])
-		}
+	assert := assert.New(t)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, match, err := tt.rule.Evaluate(tt.eval)
+			assert.ErrorIs(err, tt.expectedErr)
+			assert.Equal(tt.expectedMatch, match)
+			assert.Equal(tt.expectedResult, result)
+		})
 	}
 }

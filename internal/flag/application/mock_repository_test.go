@@ -7,12 +7,12 @@ import (
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 )
 
-type mockFlagFlagRepository struct {
+type mockFlagRepository struct {
 	flags    []domain.Flag
 	errFetch error
 }
 
-func (r *mockFlagFlagRepository) FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error) {
+func (r *mockFlagRepository) FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error) {
 	if r.errFetch != nil {
 		return domain.Flag{}, r.errFetch
 	}
