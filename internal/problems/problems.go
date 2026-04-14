@@ -1,9 +1,9 @@
 // Package problems provides a robust implementation of RFC 9457 (Problem Details for HTTP APIs).
 //
-// The package is designed around a "Gatekeeper" architecture: the 'New' function 
-// validates and sanitizes all inputs to return a 'problem' instance that is 
-// guaranteed to be valid. All other package functions treat the 'problem' type 
-// as a trusted, read-only internal state, ensuring high reliability and 
+// The package is designed around a "Gatekeeper" architecture: the 'New' function
+// validates and sanitizes all inputs to return a 'problem' instance that is
+// guaranteed to be valid. All other package functions treat the 'problem' type
+// as a trusted, read-only internal state, ensuring high reliability and
 // consistent API responses.
 package problems
 
@@ -57,9 +57,9 @@ func (p problem) Instance() string           { return p.instance }
 func (p problem) Extensions() map[string]any { return p.extensions }
 
 // New creates a problem struct that strictly adheres to RFC 9457.
-// It prioritizes returning a usable problem over failing: if the input is 
-// invalid, it applies sensible defaults (e.g., "about:blank" for missing types). 
-// Any returned error indicates a validation failure in the provided ProblemParams, 
+// It prioritizes returning a usable problem over failing: if the input is
+// invalid, it applies sensible defaults (e.g., "about:blank" for missing types).
+// Any returned error indicates a validation failure in the provided ProblemParams,
 // though the resulting problem is always safe for use in WriteProblem.
 func New(p ProblemParams) (pr problem, err error) {
 	// The 5 reserved field validation
@@ -106,8 +106,8 @@ func New(p ProblemParams) (pr problem, err error) {
 }
 
 // WriteProblem serializes the problem to JSON and writes it to the ResponseWriter.
-// It sets the "Content-Type" header to "application/problem+json" and uses the 
-// status code embedded in the problem. If the provided statusCode differs from 
+// It sets the "Content-Type" header to "application/problem+json" and uses the
+// status code embedded in the problem. If the provided statusCode differs from
 // the problem's status, the problem's internal status takes precedence.
 func WriteProblem(w http.ResponseWriter, statusCode int, p problem) (err error) {
 	if w == nil {
@@ -176,8 +176,8 @@ func validateProblemParams(p ProblemParams) (err error) {
 	return err
 }
 
-// validateExtensionKey ensures a key follows RFC 9457 requirements: 
-// it must be at least 3 characters, start with a letter, contain only 
+// validateExtensionKey ensures a key follows RFC 9457 requirements:
+// it must be at least 3 characters, start with a letter, contain only
 // alphanumeric/underscore characters, and not conflict with reserved names.
 func validateExtensionKey(k string) (err error) {
 	switch k {
