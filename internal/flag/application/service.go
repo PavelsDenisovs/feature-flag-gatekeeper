@@ -8,7 +8,7 @@ import (
 
 //mockery:generate: true
 type FlagRepository interface {
-	FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error)
+	FetchFlagByKey(ctx context.Context, flagKey string) (*domain.Flag, error)
 }
 
 //mockery:generate: true

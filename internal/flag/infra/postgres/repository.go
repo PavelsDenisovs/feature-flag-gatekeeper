@@ -30,7 +30,7 @@ type flagRow struct {
 	UpdatedAt   time.Time       `db:"updated_at"`
 }
 
-func (row *flagRow) fromDomain(f domain.Flag) error {
+func (row *flagRow) fromDomain(f *domain.Flag) error {
 	configBytes, err := json.Marshal(f.Config)
 	if err != nil {
 		return fmt.Errorf("marshal config field: %w", err)
@@ -46,10 +46,10 @@ func (row *flagRow) fromDomain(f domain.Flag) error {
 	return nil
 }
 
-func (row *flagRow) toDomain() (domain.Flag, error) {
-	var f domain.Flag
+func (row *flagRow) toDomain() (*domain.Flag, error) {
+	var f *domain.Flag
 	if err := json.Unmarshal(row.Config, &f.Config); err != nil {
-		return domain.Flag{}, fmt.Errorf("unmarshal config: %w", err)
+		return nil, fmt.Errorf("unmarshal config: %w", err)
 	}
 
 	f.ID = row.ID
@@ -62,7 +62,7 @@ func (row *flagRow) toDomain() (domain.Flag, error) {
 	return f, nil
 }
 
-func (r *repository) FetchFlagByKey(ctx context.Context, key string) (domain.Flag, error) {
+func (r *repository) FetchFlagByKey(ctx context.Context, key string) (*domain.Flag, error) {
 	query := `
 		SELECT id, flag_key, enabled, description, config, created_at, updated_at 
     FROM flags WHERE flag_key = $1`
@@ -73,9 +73,9 @@ func (r *repository) FetchFlagByKey(ctx context.Context, key string) (domain.Fla
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return domain.Flag{}, domain.ErrFlagNotFound
+			return nil, domain.ErrFlagNotFound
 		}
-		return domain.Flag{}, err
+		return nil, err
 	}
 	return row.toDomain()
 }

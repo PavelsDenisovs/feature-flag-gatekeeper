@@ -39,22 +39,24 @@ func (_m *MockFlagRepository) EXPECT() *MockFlagRepository_Expecter {
 }
 
 // FetchFlagByKey provides a mock function for the type MockFlagRepository
-func (_mock *MockFlagRepository) FetchFlagByKey(ctx context.Context, flagKey string) (domain.Flag, error) {
+func (_mock *MockFlagRepository) FetchFlagByKey(ctx context.Context, flagKey string) (*domain.Flag, error) {
 	ret := _mock.Called(ctx, flagKey)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FetchFlagByKey")
 	}
 
-	var r0 domain.Flag
+	var r0 *domain.Flag
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) (domain.Flag, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) (*domain.Flag, error)); ok {
 		return returnFunc(ctx, flagKey)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) domain.Flag); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) *domain.Flag); ok {
 		r0 = returnFunc(ctx, flagKey)
 	} else {
-		r0 = ret.Get(0).(domain.Flag)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*domain.Flag)
+		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
 		r1 = returnFunc(ctx, flagKey)
@@ -94,12 +96,12 @@ func (_c *MockFlagRepository_FetchFlagByKey_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockFlagRepository_FetchFlagByKey_Call) Return(flag domain.Flag, err error) *MockFlagRepository_FetchFlagByKey_Call {
+func (_c *MockFlagRepository_FetchFlagByKey_Call) Return(flag *domain.Flag, err error) *MockFlagRepository_FetchFlagByKey_Call {
 	_c.Call.Return(flag, err)
 	return _c
 }
 
-func (_c *MockFlagRepository_FetchFlagByKey_Call) RunAndReturn(run func(ctx context.Context, flagKey string) (domain.Flag, error)) *MockFlagRepository_FetchFlagByKey_Call {
+func (_c *MockFlagRepository_FetchFlagByKey_Call) RunAndReturn(run func(ctx context.Context, flagKey string) (*domain.Flag, error)) *MockFlagRepository_FetchFlagByKey_Call {
 	_c.Call.Return(run)
 	return _c
 }
