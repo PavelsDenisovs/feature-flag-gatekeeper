@@ -7,6 +7,7 @@ import (
 
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/application"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
+	appmock "github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/mocks/flag/application"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -14,7 +15,7 @@ import (
 func TestEvaluate(t *testing.T) {
 	tests := []struct {
 		name        string
-		setupMock   func(repo *application.MockFlagRepository)
+		setupMock   func(repo *appmock.MockFlagRepository)
 		req         application.EvaluateRequest
 		expectedRes application.EvaluateResponse
 		expectedErr error
@@ -25,7 +26,7 @@ func TestEvaluate(t *testing.T) {
 				FlagKey:    "abc",
 				SubjectKey: "abc",
 			},
-			setupMock: func(repo *application.MockFlagRepository) {
+			setupMock: func(repo *appmock.MockFlagRepository) {
 				repo.EXPECT().
 					FetchFlagByKey(mock.Anything, mock.Anything).
 					Return(newFlag(domain.NewFlagParams{
@@ -72,7 +73,7 @@ func TestEvaluate(t *testing.T) {
 				FlagKey:    "abc",
 				SubjectKey: "abc",
 			},
-			setupMock: func(repo *application.MockFlagRepository) {
+			setupMock: func(repo *appmock.MockFlagRepository) {
 				repo.EXPECT().
 					FetchFlagByKey(mock.Anything, mock.Anything).
 					Return(nil, domain.ErrFlagNotFound).
@@ -92,7 +93,7 @@ func TestEvaluate(t *testing.T) {
 					"city": "London",
 				},
 			},
-			setupMock: func(repo *application.MockFlagRepository) {
+			setupMock: func(repo *appmock.MockFlagRepository) {
 				repo.EXPECT().
 					FetchFlagByKey(mock.Anything, mock.Anything).
 					Return(newFlag(domain.NewFlagParams{
@@ -106,10 +107,10 @@ func TestEvaluate(t *testing.T) {
 								{
 									Conditions: []domain.Condition{
 										{
-											Kind:       domain.ConditionKindAttribute,
+											Kind:      domain.ConditionKindAttribute,
 											Attribute: "country",
-											Operator: domain.OperatorEquals,
-											Value: "UK",
+											Operator:  domain.OperatorEquals,
+											Value:     "UK",
 										},
 									},
 									Result: true,
@@ -130,7 +131,7 @@ func TestEvaluate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repo := application.NewMockFlagRepository(t)
+			repo := appmock.NewMockFlagRepository(t)
 			if tt.setupMock != nil {
 				tt.setupMock(repo)
 			}

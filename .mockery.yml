@@ -1,12 +1,12 @@
 all: false
-filename: mocks_test.go
+filename: mocks.go
 force-file-write: true
 formatter: goimports
 generate: true
 include-auto-generated: false
 log-level: info
 structname: '{{.Mock}}{{.InterfaceName}}'
-dir: '{{.InterfaceDir}}'
+dir: "internal/mocks/{{.InterfaceDirRelative | replaceAll \"internal/\" \"\"}}"
 pkgname: '{{.SrcPackageName}}'
 recursive: true
 require-template-schema-exists: true

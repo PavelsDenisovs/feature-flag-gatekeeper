@@ -7,6 +7,7 @@ package application
 import (
 	"context"
 
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/application"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -134,24 +135,24 @@ func (_m *MockFlagService) EXPECT() *MockFlagService_Expecter {
 }
 
 // Evaluate provides a mock function for the type MockFlagService
-func (_mock *MockFlagService) Evaluate(ctx context.Context, req EvaluateRequest) (EvaluateResponse, error) {
+func (_mock *MockFlagService) Evaluate(ctx context.Context, req application.EvaluateRequest) (application.EvaluateResponse, error) {
 	ret := _mock.Called(ctx, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Evaluate")
 	}
 
-	var r0 EvaluateResponse
+	var r0 application.EvaluateResponse
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, EvaluateRequest) (EvaluateResponse, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, application.EvaluateRequest) (application.EvaluateResponse, error)); ok {
 		return returnFunc(ctx, req)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, EvaluateRequest) EvaluateResponse); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, application.EvaluateRequest) application.EvaluateResponse); ok {
 		r0 = returnFunc(ctx, req)
 	} else {
-		r0 = ret.Get(0).(EvaluateResponse)
+		r0 = ret.Get(0).(application.EvaluateResponse)
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, EvaluateRequest) error); ok {
+	if returnFunc, ok := ret.Get(1).(func(context.Context, application.EvaluateRequest) error); ok {
 		r1 = returnFunc(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -166,20 +167,20 @@ type MockFlagService_Evaluate_Call struct {
 
 // Evaluate is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req EvaluateRequest
+//   - req application.EvaluateRequest
 func (_e *MockFlagService_Expecter) Evaluate(ctx interface{}, req interface{}) *MockFlagService_Evaluate_Call {
 	return &MockFlagService_Evaluate_Call{Call: _e.mock.On("Evaluate", ctx, req)}
 }
 
-func (_c *MockFlagService_Evaluate_Call) Run(run func(ctx context.Context, req EvaluateRequest)) *MockFlagService_Evaluate_Call {
+func (_c *MockFlagService_Evaluate_Call) Run(run func(ctx context.Context, req application.EvaluateRequest)) *MockFlagService_Evaluate_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 EvaluateRequest
+		var arg1 application.EvaluateRequest
 		if args[1] != nil {
-			arg1 = args[1].(EvaluateRequest)
+			arg1 = args[1].(application.EvaluateRequest)
 		}
 		run(
 			arg0,
@@ -189,12 +190,12 @@ func (_c *MockFlagService_Evaluate_Call) Run(run func(ctx context.Context, req E
 	return _c
 }
 
-func (_c *MockFlagService_Evaluate_Call) Return(res EvaluateResponse, err error) *MockFlagService_Evaluate_Call {
+func (_c *MockFlagService_Evaluate_Call) Return(res application.EvaluateResponse, err error) *MockFlagService_Evaluate_Call {
 	_c.Call.Return(res, err)
 	return _c
 }
 
-func (_c *MockFlagService_Evaluate_Call) RunAndReturn(run func(ctx context.Context, req EvaluateRequest) (EvaluateResponse, error)) *MockFlagService_Evaluate_Call {
+func (_c *MockFlagService_Evaluate_Call) RunAndReturn(run func(ctx context.Context, req application.EvaluateRequest) (application.EvaluateResponse, error)) *MockFlagService_Evaluate_Call {
 	_c.Call.Return(run)
 	return _c
 }
