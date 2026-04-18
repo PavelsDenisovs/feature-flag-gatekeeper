@@ -37,6 +37,7 @@ func TestFetchFlagByKey(t *testing.T) {
 		repo := New(db)
 		f, err := repo.FetchFlagByKey(ctx, "available_key")
 		require.NoError(err)
+		require.NotNil(f)
 		require.NotEqual(f.Key, "")
 	})
 
@@ -44,7 +45,7 @@ func TestFetchFlagByKey(t *testing.T) {
 		repo := New(db)
 		f, err := repo.FetchFlagByKey(ctx, "unavailable_key")
 		require.ErrorIs(err, domain.ErrFlagNotFound)
-		require.Equal(f.Key, "")
+		require.Nil(f)
 	})
 }
 
