@@ -12,12 +12,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type repository struct {
+type flagRepository struct {
 	db *sql.DB
 }
 
-func New(db *sql.DB) *repository {
-	return &repository{db: db}
+func NewFlagRepository(db *sql.DB) *flagRepository {
+	return &flagRepository{db: db}
 }
 
 type flagRow struct {
@@ -62,7 +62,7 @@ func (row *flagRow) toDomain() (*domain.Flag, error) {
 	return &f, nil
 }
 
-func (r *repository) FetchFlagByKey(ctx context.Context, key string) (*domain.Flag, error) {
+func (r *flagRepository) FetchFlagByKey(ctx context.Context, key string) (*domain.Flag, error) {
 	query := `
 		SELECT id, flag_key, enabled, description, config, created_at, updated_at 
     FROM flags WHERE flag_key = $1`

@@ -25,7 +25,7 @@ type EvaluateResponse struct {
 // Evaluate determines whether a flag is enabled for the given evaluation context.
 //
 // If err != nil, res.Enabled is false
-func (s *service) Evaluate(ctx context.Context, req EvaluateRequest) (res EvaluateResponse, err error) {
+func (s *flagService) Evaluate(ctx context.Context, req EvaluateRequest) (res EvaluateResponse, err error) {
 	if req.FlagKey == "" {
 		return EvaluateResponse{
 			Enabled: false,

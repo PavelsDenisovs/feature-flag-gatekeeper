@@ -135,7 +135,7 @@ func TestEvaluate(t *testing.T) {
 			if tt.setupMock != nil {
 				tt.setupMock(repo)
 			}
-			svc := application.New(repo)
+			svc := application.NewFlagService(repo)
 			ctx := t.Context()
 
 			res, err := svc.Evaluate(ctx, tt.req)

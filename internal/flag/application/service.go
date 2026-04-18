@@ -16,13 +16,13 @@ type FlagService interface {
 	Evaluate(ctx context.Context, req EvaluateRequest) (res EvaluateResponse, err error)
 }
 
-type service struct {
+type flagService struct {
 	repo FlagRepository
 }
 
-func New(repo FlagRepository) *service {
+func NewFlagService(repo FlagRepository) *flagService {
 	if repo == nil {
 		panic("nil repository")
 	}
-	return &service{repo: repo}
+	return &flagService{repo: repo}
 }

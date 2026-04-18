@@ -16,8 +16,8 @@ type HTTPConfig struct {
 }
 
 func New(cfg HTTPConfig, db *sql.DB) *http.Server {
-	repo := flagpq.New(db)
-	flagService := flagapp.New(repo)
+	repo := flagpq.NewFlagRepository(db)
+	flagService := flagapp.NewFlagService(repo)
 
 	mux := http.NewServeMux()
 
