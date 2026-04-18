@@ -25,7 +25,6 @@ var (
 	ErrExtValidationShortKey     = errors.New("extension key should be 3 or more characters long")
 	ErrExtValidationStartLetter  = errors.New("extension key should start with a letter")
 	ErrExtValidationInvalidChars = errors.New("extension key may contain only digits, letters and '_'")
-	ErrNilExtensions             = errors.New("Extensions field is nil")
 
 	ErrStatusCodesDiffer = errors.New("problem and given explicitly status codes differ")
 	ErrNilWriter         = errors.New("ResponseWriter is nil")
@@ -77,9 +76,6 @@ func New(p ProblemParams) (pr problem, err error) {
 		}
 		if errors.Is(e, ErrStatusAbsent) || errors.Is(e, ErrInvalidStatus) {
 			p.Status = http.StatusInternalServerError
-		}
-		if errors.Is(e, ErrNilExtensions) {
-			p.Extensions = make(map[string]any, 0)
 		}
 		err = errors.Join(err, e)
 	}
@@ -168,9 +164,6 @@ func validateProblemParams(p ProblemParams) (err error) {
 		} else {
 			err = errors.Join(err, ErrInvalidStatus)
 		}
-	}
-	if p.Extensions == nil {
-		err = errors.Join(err, ErrNilExtensions)
 	}
 
 	return err

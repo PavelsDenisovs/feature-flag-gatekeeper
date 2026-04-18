@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNew(t *testing.T) {
@@ -82,16 +83,6 @@ func TestNew(t *testing.T) {
 			),
 			expected:    problem(validProblem()),
 			expectedErr: ErrExtValidationInvalidChars,
-		},
-		{
-			name: "nil_extensions_map",
-			input: ProblemParams(validProblemParams().
-				WithExtensions(nil),
-			),
-			expected: problem(validProblem().
-				WithExtensions(make(map[string]any, 0)),
-			),
-			expectedErr: ErrNilExtensions,
 		},
 		{
 			name: "invalid_status",
@@ -177,6 +168,29 @@ func TestWriteProblem(t *testing.T) {
 					assert.JSONEq(tt.expectedBody, rec.Body.String())
 				}
 			}
+		})
+	}
+}
+
+func TestValidateProblemParams(t *testing.T) {
+	tests := []struct {
+		name        string
+		params      ProblemParams
+		expectedErr error
+	}{
+		{
+			name: "extensions_absent",
+			params: ProblemParams(validProblemParams().
+				WithExtensions(nil),
+			),
+			expectedErr: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateProblemParams(tt.params)
+			require.ErrorIs(t, err, tt.expectedErr)
 		})
 	}
 }
