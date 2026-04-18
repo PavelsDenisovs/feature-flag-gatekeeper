@@ -47,7 +47,7 @@ func (row *flagRow) fromDomain(f *domain.Flag) error {
 }
 
 func (row *flagRow) toDomain() (*domain.Flag, error) {
-	var f *domain.Flag
+	var f domain.Flag
 	if err := json.Unmarshal(row.Config, &f.Config); err != nil {
 		return nil, fmt.Errorf("unmarshal config: %w", err)
 	}
@@ -59,7 +59,7 @@ func (row *flagRow) toDomain() (*domain.Flag, error) {
 	f.CreatedAt = row.CreatedAt
 	f.UpdatedAt = row.UpdatedAt
 
-	return f, nil
+	return &f, nil
 }
 
 func (r *repository) FetchFlagByKey(ctx context.Context, key string) (*domain.Flag, error) {
