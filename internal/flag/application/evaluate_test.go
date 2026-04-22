@@ -29,7 +29,7 @@ func TestEvaluate(t *testing.T) {
 			setupMock: func(repo *appmock.MockFlagRepository) {
 				repo.EXPECT().
 					FetchFlagByKey(mock.Anything, mock.Anything).
-					Return(newFlag(domain.NewFlagParams{
+					Return(newFlag(domain.FlagData{
 						Key:         "abc",
 						Enabled:     true,
 						Description: "abc",
@@ -96,7 +96,7 @@ func TestEvaluate(t *testing.T) {
 			setupMock: func(repo *appmock.MockFlagRepository) {
 				repo.EXPECT().
 					FetchFlagByKey(mock.Anything, mock.Anything).
-					Return(newFlag(domain.NewFlagParams{
+					Return(newFlag(domain.FlagData{
 						Key:         "abc",
 						Enabled:     true,
 						Description: "abc",
@@ -147,7 +147,7 @@ func TestEvaluate(t *testing.T) {
 
 var errFetch = errors.New("some error")
 
-func newFlag(params domain.NewFlagParams) *domain.Flag {
+func newFlag(params domain.FlagData) *domain.Flag {
 	f, err := domain.NewFlag(params)
 	if err != nil {
 		log.Fatalf("failed to create flag with params: %v", params)

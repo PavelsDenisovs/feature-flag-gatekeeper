@@ -9,12 +9,12 @@ import (
 func TestNewFlag(t *testing.T) {
 	tests := []struct {
 		name        string
-		params      NewFlagParams
+		params      FlagData
 		expectedErr error
 	}{
 		{
 			name: "valid_input",
-			params: NewFlagParams{
+			params: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",
@@ -38,7 +38,7 @@ func TestNewFlag(t *testing.T) {
 		},
 		{
 			name: "invalid_config_version",
-			params: NewFlagParams{
+			params: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",
@@ -73,14 +73,14 @@ func TestNewFlag(t *testing.T) {
 func TestFlag_Evaluate(t *testing.T) {
 	tests := []struct {
 		name           string
-		newFlagParams  NewFlagParams
+		newFlagParams  FlagData
 		eval           EvaluationContext
 		expectedResult bool
 		expectedErr    error
 	}{
 		{
 			name: "valid_input_successful_evaluation",
-			newFlagParams: NewFlagParams{
+			newFlagParams: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",
@@ -109,7 +109,7 @@ func TestFlag_Evaluate(t *testing.T) {
 		},
 		{
 			name: "valid_input_unsuccessful_evaluation",
-			newFlagParams: NewFlagParams{
+			newFlagParams: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",
@@ -138,7 +138,7 @@ func TestFlag_Evaluate(t *testing.T) {
 		},
 		{
 			name: "disabled_flag_fallbacks_to_default",
-			newFlagParams: NewFlagParams{
+			newFlagParams: FlagData{
 				Key:         "abc",
 				Enabled:     false,
 				Description: "abc",
@@ -167,7 +167,7 @@ func TestFlag_Evaluate(t *testing.T) {
 		},
 		{
 			name: "no_matched_rules_fallbacks_to_default",
-			newFlagParams: NewFlagParams{
+			newFlagParams: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",
@@ -205,7 +205,7 @@ func TestFlag_Evaluate(t *testing.T) {
 		},
 		{
 			name: "evaluation_fail",
-			newFlagParams: NewFlagParams{
+			newFlagParams: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",
@@ -233,7 +233,7 @@ func TestFlag_Evaluate(t *testing.T) {
 		},
 		{
 			name: "first_rule_mismatch_second_rule_matches",
-			newFlagParams: NewFlagParams{
+			newFlagParams: FlagData{
 				Key:         "abc",
 				Enabled:     true,
 				Description: "abc",

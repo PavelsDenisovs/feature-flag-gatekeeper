@@ -79,3 +79,19 @@ func (r *flagRepository) FetchFlagByKey(ctx context.Context, key string) (*domai
 	}
 	return row.toDomain()
 }
+
+func (r *flagRepository) SaveFlag(ctx context.Context, f *domain.Flag) (uuid.UUID, error) {
+	return uuid.Nil, nil
+}
+
+func (r *flagRepository) FetchFlag(ctx context.Context, id uuid.UUID) (*domain.Flag, error) {
+	return nil, nil
+}
+
+func (r *flagRepository) DeleteFlag(ctx context.Context, id uuid.UUID) error {
+	return nil
+}
+
+func (r *flagRepository) ListFlags(ctx context.Context, limit, offset int) ([]*domain.Flag, error) {
+	return []*domain.Flag{}, nil
+}

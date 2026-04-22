@@ -31,14 +31,14 @@ type EvaluationContext struct {
 	Attributes map[string]string
 }
 
-type NewFlagParams struct {
+type FlagData struct {
 	Key         string
 	Enabled     bool
 	Description string
 	Config      Config
 }
 
-func NewFlag(params NewFlagParams) (*Flag, error) {
+func NewFlag(params FlagData) (*Flag, error) {
 	if params.Config.Version != CurrentConfigVersion {
 		return nil, fmt.Errorf("%w: current %d, got %d",
 			ErrInvalidConfigVersion, CurrentConfigVersion, params.Config.Version)
@@ -74,4 +74,13 @@ func (f *Flag) Evaluate(eval EvaluationContext) (bool, error) {
 	}
 
 	return f.Config.Default, nil
+}
+
+func (f *Flag) Update(params FlagData) error {
+	f.Key = params.Key
+	f.Enabled = params.Enabled
+	f.Description = params.Description
+	f.Config = params.Config
+	f.UpdatedAt = time.Now()
+	return nil
 }
