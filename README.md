@@ -1,17 +1,27 @@
-Feature Flag Gatekeeper is a service that makes feature access decisions based on rollout percentage deterministically for each user. Enforcement of those decisions remains the responsibility of consumers.
+<h1 align="center">WIP</h1>
+Feature Flag Gatekeeper is a service that evaluates feature flags at runtime.
 
-## Why deterministic rollout
-Random feature access gives a user non-deterministic feature set, which creates inconsistent experience and disables statistical capabilities: control group formation, cohort stability and experiment validity.
+It allows applications to decide whether a feature should be enabled for a specific user or request based on configurable rollout rules, without requiring a redeploy.
 
-## Problems & Project Solutions
-Problem: Features have binary rollout and their release affects all the users creating a risk with the biggest blast radius.
+## Why It Exists
 
-Solution: The risk is localized, because only the defined share of the users gets access to a new feature.
+Problem: A broken feature may require a full redeploy to disable it.
+
+Solution: A feature flag can be turned off at runtime, so access can be blocked immediately.
+
+---
+
+Problem: Releasing a feature to all users at once creates a large blast radius.
+
+Solution: Gradual rollout limits exposure by enabling the feature only for a defined percentage or segment of users.
 
 ---
 
-Problem: After integrating a feature with binary rollout, an external factor can affect statistics, which leads to incorrect decisions and assumptions about feature influence.
+Problem: It is hard to measure feature impact when everyone receives the same version at the same time.
 
-Solution: The versions with and without a feature can exist simultaneously, which allows to track the control groups with clear differences in a feature set.
+Solution: Feature flags allow control and treatment groups to exist simultaneously, making experiments and comparisons more reliable.
 
----
+## Running the Project
+
+Setup and run instructions will be added soon as the project is finalized.
+
