@@ -22,12 +22,15 @@ func TestFetchFlagByKey(t *testing.T) {
 	ctx := t.Context()
 	require := require.New(t)
 
-	connStr := testinfra.SetupPostgres(ctx, t)
-
-	db, err := sql.Open("postgres", connStr)
+	pq, err := testinfra.SetupPostgres(ctx)
 	require.NoError(err)
+	defer pq.Cleanup()
 
-	err = migrator.ApplyMigrations(connStr)
+	db, err := sql.Open("postgres", pq.ConnectionString)
+	require.NoError(err)
+	defer db.Close()
+
+	err = migrator.ApplyMigrations(pq.ConnectionString)
 	require.NoError(err)
 
 	err = seedDatabase(ctx, t, db)
