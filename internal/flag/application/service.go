@@ -9,7 +9,8 @@ import (
 
 //mockery:generate: true
 type FlagRepository interface {
-	SaveFlag(ctx context.Context, f *domain.Flag) (uuid.UUID, error)
+	CreateFlag(ctx context.Context, f *domain.Flag) error
+	UpdateFlag(ctx context.Context, f *domain.Flag) error
 	FetchFlag(ctx context.Context, id uuid.UUID) (*domain.Flag, error)
 	FetchFlagByKey(ctx context.Context, key string) (*domain.Flag, error)
 	DeleteFlag(ctx context.Context, id uuid.UUID) error

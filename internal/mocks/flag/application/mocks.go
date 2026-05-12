@@ -40,6 +40,63 @@ func (_m *MockFlagRepository) EXPECT() *MockFlagRepository_Expecter {
 	return &MockFlagRepository_Expecter{mock: &_m.Mock}
 }
 
+// CreateFlag provides a mock function for the type MockFlagRepository
+func (_mock *MockFlagRepository) CreateFlag(ctx context.Context, f *domain.Flag) error {
+	ret := _mock.Called(ctx, f)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateFlag")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Flag) error); ok {
+		r0 = returnFunc(ctx, f)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockFlagRepository_CreateFlag_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateFlag'
+type MockFlagRepository_CreateFlag_Call struct {
+	*mock.Call
+}
+
+// CreateFlag is a helper method to define mock.On call
+//   - ctx context.Context
+//   - f *domain.Flag
+func (_e *MockFlagRepository_Expecter) CreateFlag(ctx interface{}, f interface{}) *MockFlagRepository_CreateFlag_Call {
+	return &MockFlagRepository_CreateFlag_Call{Call: _e.mock.On("CreateFlag", ctx, f)}
+}
+
+func (_c *MockFlagRepository_CreateFlag_Call) Run(run func(ctx context.Context, f *domain.Flag)) *MockFlagRepository_CreateFlag_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *domain.Flag
+		if args[1] != nil {
+			arg1 = args[1].(*domain.Flag)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFlagRepository_CreateFlag_Call) Return(err error) *MockFlagRepository_CreateFlag_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockFlagRepository_CreateFlag_Call) RunAndReturn(run func(ctx context.Context, f *domain.Flag) error) *MockFlagRepository_CreateFlag_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteFlag provides a mock function for the type MockFlagRepository
 func (_mock *MockFlagRepository) DeleteFlag(ctx context.Context, id uuid.UUID) error {
 	ret := _mock.Called(ctx, id)
@@ -307,47 +364,36 @@ func (_c *MockFlagRepository_ListFlags_Call) RunAndReturn(run func(ctx context.C
 	return _c
 }
 
-// SaveFlag provides a mock function for the type MockFlagRepository
-func (_mock *MockFlagRepository) SaveFlag(ctx context.Context, f *domain.Flag) (uuid.UUID, error) {
+// UpdateFlag provides a mock function for the type MockFlagRepository
+func (_mock *MockFlagRepository) UpdateFlag(ctx context.Context, f *domain.Flag) error {
 	ret := _mock.Called(ctx, f)
 
 	if len(ret) == 0 {
-		panic("no return value specified for SaveFlag")
+		panic("no return value specified for UpdateFlag")
 	}
 
-	var r0 uuid.UUID
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Flag) (uuid.UUID, error)); ok {
-		return returnFunc(ctx, f)
-	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Flag) uuid.UUID); ok {
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Flag) error); ok {
 		r0 = returnFunc(ctx, f)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(uuid.UUID)
-		}
+		r0 = ret.Error(0)
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.Flag) error); ok {
-		r1 = returnFunc(ctx, f)
-	} else {
-		r1 = ret.Error(1)
-	}
-	return r0, r1
+	return r0
 }
 
-// MockFlagRepository_SaveFlag_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SaveFlag'
-type MockFlagRepository_SaveFlag_Call struct {
+// MockFlagRepository_UpdateFlag_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateFlag'
+type MockFlagRepository_UpdateFlag_Call struct {
 	*mock.Call
 }
 
-// SaveFlag is a helper method to define mock.On call
+// UpdateFlag is a helper method to define mock.On call
 //   - ctx context.Context
 //   - f *domain.Flag
-func (_e *MockFlagRepository_Expecter) SaveFlag(ctx interface{}, f interface{}) *MockFlagRepository_SaveFlag_Call {
-	return &MockFlagRepository_SaveFlag_Call{Call: _e.mock.On("SaveFlag", ctx, f)}
+func (_e *MockFlagRepository_Expecter) UpdateFlag(ctx interface{}, f interface{}) *MockFlagRepository_UpdateFlag_Call {
+	return &MockFlagRepository_UpdateFlag_Call{Call: _e.mock.On("UpdateFlag", ctx, f)}
 }
 
-func (_c *MockFlagRepository_SaveFlag_Call) Run(run func(ctx context.Context, f *domain.Flag)) *MockFlagRepository_SaveFlag_Call {
+func (_c *MockFlagRepository_UpdateFlag_Call) Run(run func(ctx context.Context, f *domain.Flag)) *MockFlagRepository_UpdateFlag_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -365,12 +411,12 @@ func (_c *MockFlagRepository_SaveFlag_Call) Run(run func(ctx context.Context, f 
 	return _c
 }
 
-func (_c *MockFlagRepository_SaveFlag_Call) Return(uUID uuid.UUID, err error) *MockFlagRepository_SaveFlag_Call {
-	_c.Call.Return(uUID, err)
+func (_c *MockFlagRepository_UpdateFlag_Call) Return(err error) *MockFlagRepository_UpdateFlag_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockFlagRepository_SaveFlag_Call) RunAndReturn(run func(ctx context.Context, f *domain.Flag) (uuid.UUID, error)) *MockFlagRepository_SaveFlag_Call {
+func (_c *MockFlagRepository_UpdateFlag_Call) RunAndReturn(run func(ctx context.Context, f *domain.Flag) error) *MockFlagRepository_UpdateFlag_Call {
 	_c.Call.Return(run)
 	return _c
 }

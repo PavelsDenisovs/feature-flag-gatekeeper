@@ -48,6 +48,6 @@ func SetupPostgres(ctx context.Context) (*PostgresContainer, error) {
 
 	return &PostgresContainer{
 		ConnectionString: connStr,
-		Cleanup: cleanup,
+		Cleanup:          cleanup,
 	}, nil
 }
