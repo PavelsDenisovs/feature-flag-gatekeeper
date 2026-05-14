@@ -76,13 +76,13 @@ func TestEvaluate(t *testing.T) {
 			setupMock: func(repo *appmock.MockFlagRepository) {
 				repo.EXPECT().
 					FetchFlagByKey(mock.Anything, mock.Anything).
-					Return(nil, domain.ErrFlagNotFound).
+					Return(nil, application.ErrFlagNotFound).
 					Once()
 			},
 			expectedRes: application.EvaluateResponse{
 				Enabled: false,
 			},
-			expectedErr: domain.ErrFlagNotFound,
+			expectedErr: application.ErrFlagNotFound,
 		},
 		{
 			name: "evaluation_fail",

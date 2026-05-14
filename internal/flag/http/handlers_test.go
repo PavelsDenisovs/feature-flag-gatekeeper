@@ -79,7 +79,7 @@ func TestEvaluate(t *testing.T) {
 						SubjectKey: "123",
 						FlagKey:    "abc",
 					}).
-					Return(application.EvaluateResponse{}, domain.ErrFlagNotFound).
+					Return(application.EvaluateResponse{}, application.ErrFlagNotFound).
 					Once()
 			},
 			expectedStatus: http.StatusNotFound,

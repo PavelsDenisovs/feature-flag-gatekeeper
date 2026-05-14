@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/database/migrator"
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/application"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/testinfra"
 	"github.com/google/uuid"
@@ -47,7 +48,7 @@ func TestFetchFlagByKey(t *testing.T) {
 	t.Run("non_existing_key", func(t *testing.T) {
 		repo := NewFlagRepository(db)
 		f, err := repo.FetchFlagByKey(ctx, "unavailable_key")
-		require.ErrorIs(err, domain.ErrFlagNotFound)
+		require.ErrorIs(err, application.ErrFlagNotFound)
 		require.Nil(f)
 	})
 }

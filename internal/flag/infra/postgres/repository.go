@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/application"
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	"github.com/google/uuid"
 )
@@ -73,7 +74,7 @@ func (r *flagRepository) FetchFlagByKey(ctx context.Context, key string) (*domai
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domain.ErrFlagNotFound
+			return nil, application.ErrFlagNotFound
 		}
 		return nil, err
 	}

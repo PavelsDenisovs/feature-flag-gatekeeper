@@ -9,7 +9,6 @@ import (
 )
 
 var (
-	ErrFlagNotFound         = errors.New("flag not found")
 	ErrEvaluationFailed     = errors.New("evaluation failed")
 	ErrInvalidConfigVersion = errors.New("invalid config version")
 )

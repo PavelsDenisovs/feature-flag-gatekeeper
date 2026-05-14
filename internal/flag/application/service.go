@@ -2,9 +2,14 @@ package application
 
 import (
 	"context"
+	"errors"
 
 	"github.com/PavelsDenisovs/feature-flag-gatekeeper/internal/flag/domain"
 	"github.com/google/uuid"
+)
+
+var (
+	ErrFlagNotFound         = errors.New("flag not found")
 )
 
 //mockery:generate: true

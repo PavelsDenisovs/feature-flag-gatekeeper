@@ -99,7 +99,7 @@ func (h *handler) Evaluate(w http.ResponseWriter, r *http.Request) {
 		},
 	)
 	if err != nil {
-		if errors.Is(err, domain.ErrFlagNotFound) {
+		if errors.Is(err, application.ErrFlagNotFound) {
 			handleErrorResponse(w, http.StatusNotFound, problems.ProblemParams{
 				Type:     fmt.Sprintf("tag:feature-flag-gatekeeper,%v:flag/evaluate/flag-not-found", date),
 				Title:    "Flag not found",

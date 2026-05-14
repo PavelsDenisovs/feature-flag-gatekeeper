@@ -36,7 +36,7 @@ func (s *flagService) Evaluate(ctx context.Context, req EvaluateRequest) (res Ev
 	if err != nil {
 		return EvaluateResponse{
 			Enabled: false,
-		}, fmt.Errorf("%w: %v", domain.ErrFlagNotFound, err)
+		}, fmt.Errorf("%w: %v", ErrFlagNotFound, err)
 	}
 
 	enabled, err := flag.Evaluate(domain.EvaluationContext{
