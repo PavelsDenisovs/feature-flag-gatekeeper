@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ErrFlagNotFound         = errors.New("flag not found")
+	ErrFlagNotFound = errors.New("flag not found")
 )
 
 //mockery:generate: true
@@ -24,7 +24,7 @@ type FlagRepository interface {
 
 //mockery:generate: true
 type FlagService interface {
-	CreateFlag(ctx context.Context, params domain.FlagData) (uuid.UUID, error)
+	CreateFlag(ctx context.Context, params domain.FlagData) (domain.Flag, error)
 	GetFlag(ctx context.Context, id uuid.UUID) (domain.Flag, error)
 	UpdateFlag(ctx context.Context, id uuid.UUID, params domain.FlagData) error
 	DeleteFlag(ctx context.Context, id uuid.UUID) error

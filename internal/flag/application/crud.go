@@ -14,8 +14,8 @@ type CreateFlagRequest struct {
 	Config      domain.Config
 }
 
-func (s *flagService) CreateFlag(ctx context.Context, params domain.FlagData) (uuid.UUID, error) {
-	return uuid.Nil, nil
+func (s *flagService) CreateFlag(ctx context.Context, params domain.FlagData) (domain.Flag, error) {
+	return domain.Flag{}, nil
 }
 
 func (s *flagService) GetFlag(ctx context.Context, id uuid.UUID) (domain.Flag, error) {

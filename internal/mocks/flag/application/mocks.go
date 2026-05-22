@@ -449,24 +449,22 @@ func (_m *MockFlagService) EXPECT() *MockFlagService_Expecter {
 }
 
 // CreateFlag provides a mock function for the type MockFlagService
-func (_mock *MockFlagService) CreateFlag(ctx context.Context, params domain.FlagData) (uuid.UUID, error) {
+func (_mock *MockFlagService) CreateFlag(ctx context.Context, params domain.FlagData) (domain.Flag, error) {
 	ret := _mock.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateFlag")
 	}
 
-	var r0 uuid.UUID
+	var r0 domain.Flag
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.FlagData) (uuid.UUID, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.FlagData) (domain.Flag, error)); ok {
 		return returnFunc(ctx, params)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.FlagData) uuid.UUID); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.FlagData) domain.Flag); ok {
 		r0 = returnFunc(ctx, params)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(uuid.UUID)
-		}
+		r0 = ret.Get(0).(domain.Flag)
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, domain.FlagData) error); ok {
 		r1 = returnFunc(ctx, params)
@@ -506,12 +504,12 @@ func (_c *MockFlagService_CreateFlag_Call) Run(run func(ctx context.Context, par
 	return _c
 }
 
-func (_c *MockFlagService_CreateFlag_Call) Return(uUID uuid.UUID, err error) *MockFlagService_CreateFlag_Call {
-	_c.Call.Return(uUID, err)
+func (_c *MockFlagService_CreateFlag_Call) Return(flag domain.Flag, err error) *MockFlagService_CreateFlag_Call {
+	_c.Call.Return(flag, err)
 	return _c
 }
 
-func (_c *MockFlagService_CreateFlag_Call) RunAndReturn(run func(ctx context.Context, params domain.FlagData) (uuid.UUID, error)) *MockFlagService_CreateFlag_Call {
+func (_c *MockFlagService_CreateFlag_Call) RunAndReturn(run func(ctx context.Context, params domain.FlagData) (domain.Flag, error)) *MockFlagService_CreateFlag_Call {
 	_c.Call.Return(run)
 	return _c
 }
